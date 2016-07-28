@@ -1,0 +1,34 @@
+@charset "UTF-8"; //这个;号不加上就会报错
+
+/* & in SassScript 代表元素自身(最外层的嵌套选择器)*/
+
+.foo.bar .baz.bang, .bip.quz {
+	$selector: &;
+}
+
+/*变量定义 !default给一个变量赋值,如果变量已经赋值则不再赋值，如果变量没有赋值或者为null则被赋予新的值*/
+
+$content: "first";
+$content: "second?" !default;
+$new_content: "third" !default;
+
+.main {
+	content: $content;
+	new-content: $new_content;
+	&.bottom {
+		font-szie: 16px;
+		font-weight: bold;
+		position: fixed;
+		display: table;
+	}
+}
+
+/*
+	插值语句
+*/
+
+$name: foo;
+$attr: border;
+p.#{$name} {
+	#{$attr}-color: blue;
+}

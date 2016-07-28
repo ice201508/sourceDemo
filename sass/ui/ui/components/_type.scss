@@ -1,5 +1,5 @@
 @charset "UTF-8";
-//@mixin类似函数的作用,可传参
+/*@mixin类似函数的作用,可传参,可以指定参数和默认值*/
 
 @mixin box-sizing ($sizing) {
 	-webkit-box-sizing: $sizing;
@@ -14,7 +14,7 @@
 }
 
 @mixin large-text {
-	/*这里表示的是font-xxx, 不是.font类, {前面有冒号*/
+	/*这里表示的是font-xxx, 不是.font类, {前面有冒号, 表示属性嵌套*/
 	font: {
 		family: Arial;
 		  size: $fontSizeMiddle;
@@ -26,4 +26,24 @@
 .page-title {
 	@include large-text;
 	padding: 4px;
+}
+
+@mixin left($value: 10px) {
+	float: left;
+	margin-right: $value;
+}
+
+.top-content {
+	@include left;
+}
+
+.error {
+	border: 1px #f00;
+	background-color: #fdd;
+}
+
+/* 意思是使用seriousError的地方都可以不再使用error */
+.seriousError {
+	@extend .error;
+	font-size: $fontSizeBig;
 }
