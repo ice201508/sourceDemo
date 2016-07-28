@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+	<meta charset="UTF-8">
+	<title>require in directive</title>
+</head>
+<body>
+	
+	<div ng-controller="mainCtrl">
+		<input type="text" ng-model="name" require-in-ng strip-by="true">
+		<p>{{name}}</p>
+		<p ng-bind-html="htmlCode | convertHtml"></p>
+		<div get-dir set-dir></div>
+		<br>
+		<div bn-timing></div>
+	</div>
+
+	<script src="./angular.js"></script>
+	<script>
+
+	/*
+		reuqire常见的用法(指令之间数据的交流)有2种
+		一种情形是: 现在要变形2个指令, 它们在link函数中有很多重合的方法,为了避免重复,可以将重合的方法写在第三个指令的controller中,需要的2个指令里的require属性写上第三个指令 
+		另一种情形是: 也是常见的情形, require需要的是ngModel这个指令,
+	*/
+		angular.module('app',[])
+			.controller('mainCtrl', mainCtrl)
+			.directive('setDir', setDir)
+			.directive('getDir', getDir)
+			.directive('requireInNg', requireInNg)
+			.directive('bnTiming', bnTiming)
+			.filter('convertHtml', convertHtml);
+
+		function mainCtrl($scope){
+			$scope.name = 'Lucy';
+			//直接绑定到ng-bind上不会过滤调html标签,但直接绑定到ng-bind-html上会提示unsafe的值
+			$scope.htmlCode = 'hello<br><span>span标签内部<hr></span>';
+		}
+
+		function requireInNg($sce){
+			return {
+				restrict: 'AE',
+				require: '?ngModel',  //这是ctrl对应的就是ngModel这个指令对应的controller,系统内置的指令,一般用来判断输入的是否合法, NgModelController
+				link: function(scope, elem, attrs, ngModel){
+					if(!ngModel) return; //do nothing if no ng-model
+					//当数据改变 view层需要更新时调用的函数
+					ngModel.$render = function(){
+						elem.html($sce.trustAsHtml(ngModel.$viewValue || ''));
+					};
+					//监听3种事件来
+					//elem.on('blur keyup change', function(){
+					elem.on('change', function(){
+						scope.$evalAsync(read);
+					})
+					read();
+
+					//向model中写入数据
+					function read(){
+						var html = elem.html();
+						if(attrs.stripBr && html == '<br>') {
+							html = '';
+						}
+						console.log(html);
+						ngModel.$setViewValue(html);
+					}
+
+					console.log(ngModel.$viewValue);
+					console.log(ngModel.$modelValue);
+					console.log(ngModel.$dirty);
+					console.log(ngModel.$valid);
+					console.log(ngModel.$invalid);
+				}
+			}
+		};
+
+		function setDir() {
+			return {
+				restrict: 'AE',
+				controller: function(){
+					//this的这种写法就是return返回的一个匿名对象obj上的方法，即obj.methodA
+					/*this.methodA = function(){
+						var a = 5;
+						var b = 6;
+						console.log('methodA in setDir');
+						return a+b;
+					};
+					this.methodB = function(){
+						console.log('methodB in setDir');
+					};*/
+					function methodA(){
+						var a = 5;
+						var b = 6;
+						console.log('methodA in setDir');
+						return a+b;
+					}
+					function methodB(){
+						console.log('methodB in setDir');
+					}
+					return {
+						'methodA': methodA,
+						'methodB': methodB
+					}
+
+				},
+				link: function(scope, elem, attr, ctrl){
+
+				}
+			}
+		}
+
+		function getDir() {
+			return {
+				restict: 'AE',
+				require: '?^setDir', //?如果require没有找到相对应的指令避免报错,程序正常执行, ^表示往父级查找. 对应的对应指令的 controller部分
+				link: function(scope, elem, attr, ctrl){
+					//对应指令内部的controller属性上的方法
+					console.log(ctrl);
+				}
+			}
+		}
+
+		function bnTiming($timeout){
+			return {
+				restrict: 'A',
+				link: function(scope, elem, attrs, ctrl){
+					console.log(ctrl);
+					$timeout(function(){
+						console.log('$timeout 1');
+					});
+					console.log(scope.$evalAsync());
+					scope.$evalAsync(function(){
+						console.log('$evalAsync');
+					});
+					$timeout(function(){
+						console.log('$timeout 2');
+					});
+				}
+			}
+		}
+
+		function convertHtml($sce){
+			return function(data){
+				//表示安全绑定,将值转换为安全的受信任的值,能安全的使用ng-bind-html
+				//也可以使用angular-sanitize外部库
+				return $sce.trustAsHtml(data);
+			}
+		}
+	</script>
+</body>
+</html>
