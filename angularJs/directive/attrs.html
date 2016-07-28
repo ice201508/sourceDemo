@@ -7,8 +7,11 @@
 <body>
     
     <div ng-controller="myController">
+        <p>
+            <span ng-repeat="i in results">{{i.id}}-- {{i.name}}</span>
+        </p>
         <div id="renderedList">
-            <p emit-when="allRendered"></p>
+            <p emit-when="results"></p>
             <p>
                 <span ng-repeat="i in results">{{i.id}}-- {{i.name}}</span>
             </p>
@@ -47,6 +50,7 @@
                 restrict: 'A',
                 link: function(scope, element, attrs) {
                     console.log(attrs.emitWhen);
+                    //$parse,$eval在运行时对scope变量赋值
                     var params = scope.$eval(attrs.emitWhen),
                         event = params.event,
                         condition = params.condition;
