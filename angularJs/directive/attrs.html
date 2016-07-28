@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div ng-controller="myController">
+        <div id="renderedList">
+            <p emit-when="allRendered"></p>
+            <p>
+                <span ng-repeat="i in results">{{i.id}}-- {{i.name}}</span>
+            </p>
+        </div>
+    </div>
+
+    <script src="../../../bower_components/angular/angular.js"></script>
+    <script>
+        var myApp = angular.module('myApp', []);
+
+        myApp.controller("myController", ['$scope', function($scope){
+            var resultsToLoad = [
+                {id: 1, name: "one"},
+                {id: 2, name: "two"},
+                {id: 3, name: "three"}
+            ];
+
+            function doneAddingToDom() {
+                console.log(document.getElementById('renderedList').children.length);
+            }
+
+            $scope.results = [];
+
+            $scope.loadResults = function(){
+                $scope.results = resultsToLoad;
+                // If run doneAddingToDom here, we will find 0 list elements in the DOM. Check console.
+                doneAddingToDom();
+            }
+
+            // If we run on doneAddingToDom here, we will find 3 list elements in the DOM.
+            $scope.$on('allRendered', doneAddingToDom);
+        }]);
+
+        myApp.directive("emitWhen", function(){
+            return {
+                restrict: 'A',
+                link: function(scope, element, attrs) {
+                    console.log(attrs.emitWhen);
+                    var params = scope.$eval(attrs.emitWhen),
+                        event = params.event,
+                        condition = params.condition;
+                    if(condition){
+                        scope.$emit(event);
+                    }
+                }
+            }
+        });
+
+        angular.bootstrap(document, ['myApp']);
+
+    </script>
+</body>
+</html>
