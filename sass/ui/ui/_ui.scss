@@ -1,0 +1,12 @@
+@charset "UTF-8";
+/*
+	这里就是要导入的具体的.scss文件
+	需要用到的全局变量
+	具体分类的各个组件UI的css样式(按照css的样式书写)
+*/
+@import "../global/var";
+
+//Components
+@import
+	"components/scaffolding",
+	"components/type";

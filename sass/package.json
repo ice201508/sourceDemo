@@ -1,0 +1,15 @@
+{
+  "name": "sass",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "init": "npm install"
+  },
+  "dependencies": {
+    "gulp-sass": "^2.3.2",
+    "gulp-sourcemaps": "^1.6.0"
+  },
+  "author": "ice",
+  "license": "ISC"
+}

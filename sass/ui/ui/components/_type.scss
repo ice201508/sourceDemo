@@ -1,0 +1,29 @@
+@charset "UTF-8";
+//@mixin类似函数的作用,可传参
+
+@mixin box-sizing ($sizing) {
+	-webkit-box-sizing: $sizing;
+	   -moz-box-sizing: $sizing;
+	        box-sizing: $sizing;
+}
+
+.contain {
+	background: $primaryColor;
+	border: 1px solid #ccc;
+	@include box-sizing(border-box);
+}
+
+@mixin large-text {
+	/*这里表示的是font-xxx, 不是.font类, {前面有冒号*/
+	font: {
+		family: Arial;
+		  size: $fontSizeMiddle;
+		weight: bold;
+	}
+	color: $primaryColor;
+}
+
+.page-title {
+	@include large-text;
+	padding: 4px;
+}
