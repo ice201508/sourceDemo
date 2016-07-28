@@ -43,7 +43,9 @@
 				require: '?ngModel',  //这是ctrl对应的就是ngModel这个指令对应的controller,系统内置的指令,一般用来判断输入的是否合法, NgModelController
 				link: function(scope, elem, attrs, ngModel){
 					if(!ngModel) return; //do nothing if no ng-model
-					//当数据改变 view层需要更新时调用的函数
+					//当ng-model绑定的值被程序改变了, $modelValue和$viewValue都和上次不一样了
+					//$modelValue绑定的数据模型的模型值,$viewValue指令元素的视图中实际的值, 这2个值不一定相等,$viewValue一定等于$setViewValue(value)中的value值,虽然调用了$setViewValue,但由于设置了ngModelOptions的debounce属性,所以会延迟，等到同步时间到了,value的值才会更新到$modelValue上
+					//$rollbackViewValue() 如果把视图值回滚到数据模型的值时,$render()会被调用
 					ngModel.$render = function(){
 						elem.html($sce.trustAsHtml(ngModel.$viewValue || ''));
 					};
