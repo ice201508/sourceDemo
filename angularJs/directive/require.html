@@ -15,7 +15,7 @@
 		<div bn-timing></div>
 	</div>
 
-	<script src="../../../bower_components/angular/angular.js"></script>
+	<script src="./angular.js"></script>
 	<script>
 
 	/*
@@ -37,22 +37,32 @@
 			$scope.htmlCode = 'hello<br><span>span标签内部<hr></span>';
 		}
 
-		function requireInNg($sce){
+		function requireInNg($sce, $http, $q){
 			return {
-				restrict: 'AE',
+				restrict: 'A',
 				require: '?ngModel',  //这是ctrl对应的就是ngModel这个指令对应的controller,系统内置的指令,一般用来判断输入的是否合法, NgModelController
+				//请求另外指令的controller,传入当前directive的linking函数中
 				link: function(scope, elem, attrs, ngModel){
 					if(!ngModel) return; //do nothing if no ng-model
+					//异步验证, 所有的异步验证都是并行并发的,只有当所有的验证都通过时,数据模型才会同步更新,只要有一个异步验证没通过,这个验证就会被放到ngModelController的$pending属性中。返回一个promise
+					ngModel.$asyncValidators.uniqueUsername = function(modelValue, viewValue){
+						var value = modelValue || viewValue;
+						//异步验证用户名是否存在, angular中的表单数据异步验证, $q.reject("res.data");
+						return $http.get("/api/users/"+ value)
+							.then()
+					}
+
 					//当ng-model绑定的值被程序改变了, $modelValue和$viewValue都和上次不一样了
 					//$modelValue绑定的数据模型的模型值,$viewValue指令元素的视图中实际的值, 这2个值不一定相等,$viewValue一定等于$setViewValue(value)中的value值,虽然调用了$setViewValue,但由于设置了ngModelOptions的debounce属性,所以会延迟，等到同步时间到了,value的值才会更新到$modelValue上
-					//$rollbackViewValue() 如果把视图值回滚到数据模型的值时,$render()会被调用
+					//$rollbackViewValue() 如果把视图值回滚到数据模型的值时,$render()会被调用, 指定UI的更新方式
 					ngModel.$render = function(){
-						elem.html($sce.trustAsHtml(ngModel.$viewValue || ''));
+						elem.html($sce.getTrustedHtml(ngModel.$viewValue || ''));
 					};
-					//监听3种事件来
-					//elem.on('blur keyup change', function(){
-					elem.on('change', function(){
-						scope.$evalAsync(read);
+					//监听3种事件来 开启绑定
+					elem.on('blur keyup change', function(){
+					//elem.on('change', function(){
+						//scope.$evalAsync(read);
+						scope.$apply(read);
 					})
 					read();
 
@@ -66,11 +76,17 @@
 						ngModel.$setViewValue(html);
 					}
 
+					//ngModelController 的属性
 					console.log(ngModel.$viewValue);
 					console.log(ngModel.$modelValue);
-					console.log(ngModel.$dirty);
-					console.log(ngModel.$valid);
+					console.log(ngModel.$error);  //所有验证失败的验证名和失败信息组成的 json 对象
+					console.log(ngModel.$pending);  //所有正在进行中的异步验证都会放在这个对象里
+					console.log(ngModel.$dirty);  //元素和用户发生过交互 就是true
+					console.log(ngModel.$pristine);  //元素没有和用户发生交互 就是true
+					console.log(ngModel.$valid);  //所有验证(异步同步)都通过 就是true
 					console.log(ngModel.$invalid);
+					console.log(ngModel.$touched);  //如果元素已经失去过焦点  就是true
+					console.log(ngModel.$untouched);
 				}
 			}
 		};

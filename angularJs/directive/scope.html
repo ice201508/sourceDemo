@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+	<meta charset="UTF-8">
+	<title>scope in directive</title>
+</head>
+<body>
+	
+	<div ng-controller="mainCtrl">
+		<div set-dir></div>
+		<!-- <get-dir my-name="{{user.name}}" my-age="user.age" my-change-age="user.changeAge()"></get-dir> -->
+		<get-dir my-name="{{user.name}}" my-age="user.age" my-change-age="user.changeAge"></get-dir>
+	</div>
+
+	<script src="./angular.js"></script>
+	<script>
+
+	/*
+		scope可以用来 指令内部和外部的controller交互，通信
+		在= &两种方式的使用上要注意 =是将函数当做一个变量指针去传递, &是传递函数,必须要加上()传递出去,
+	*/
+		angular.module('app',[])
+			.controller('mainCtrl', mainCtrl)
+			.directive('setDir', setDir)
+			.directive('getDir', getDir);
+
+		function mainCtrl($scope){
+			$scope.number = '1111 ';
+			$scope.user = {
+				'name': 'Lucy',
+				'age': 25,
+				'changeAge' : function(){
+					this.age = this.age + 3;
+					console.log(this.age);
+				}
+			}
+
+			// $scope.changeAge = function(){
+			// 	$scope.user.age = $scope.user.age + 3;
+			// }
+		}
+
+		//controller,link,compile 3者的顺序
+		function setDir() {
+			return {
+				restrict: 'A',
+				template: '<p>hello {{number}}</p>',
+				controller: function($scope) {
+					$scope.number = $scope.number + "2222 ";
+				},
+				link: function(scope, elem, attr, ctrl){
+					scope.number = scope.number + "3333 ";
+				},
+				compile: function(scope, elem, attr) {
+					return {
+						pre: function preLink(scope, elem, attr){
+							scope.number = scope.number + "4444 ";
+						},
+						next: function nextLink(scope, elem, attr) {
+							scope.number = scope.number + "5555 ";
+						}
+					}
+				}
+			}
+		}
+
+		function getDir() {
+			return {
+				restrict: 'AE',
+				scope: {
+					name: '@myName',
+					age: '=myAge',
+					//changeAge: '&myChangeAge'
+					changeAge: '=myChangeAge'
+				},
+				template: '<div><p>name: {{name}}, age: {{age}}</p><hr /> <button type="button" ng-click="changeAge()">修改</button></div>',
+				link: function(scope, elem, attr){
+					//console.log(scope.changeAge());
+				}
+			}
+		}
+
+	</script>
+</body>
+</html>
