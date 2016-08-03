@@ -1,12 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="myApp">
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
 </head>
-<body>
-	
-	<script src="//cdn.bootcss.com/angular.js/1.5.8/angular.js"></script>
-	<script></script>
+<body ng-controller="myCtrl">
+	<p>{{name}}</p>
+
+	<script src="angular.js"></script>
+	<script>
+		angular.module('myApp', [])
+			//config的配置参数在服务名后加上 'name' + Provider
+			.config(function(githubServiceProvider){
+				githubServiceProvider.setGithubUrl('git@github.com');
+			})
+
+		/*
+			.factory('UserService_1', function($http){  //工厂函数可以是函数也可以是数组,返回的是单例服务对象
+				//当我们仅仅需要的是一个方法和数据的集合而不需要处理复杂的逻辑时 使用
+				var curr_user;
+
+				return {
+					getCurrentUser: function(){
+						return current_user;
+					},
+					serCurrentUser: function(user){
+						current_user = user;
+					}
+				}
+			})
+			.factory('UserService_2', ['$http', function($http){
+				var serviceInstance = {};
+
+				return serviceInstance;
+			}])
+			//service()函数会在创建实例时通过new关键字来实例化服务对象
+			//适合使用在功能控制比较多的service里面
+			.service('personService', ['$http', function($http){
+				var self = this;
+				this.user = {};
+				this.baseUrl = "http://localhost:3000";
+				this.setName = function(newName){
+					self.user['name'] = newName;
+				};
+				this.getName = function(){
+					return $http({
+						method: 'GET',
+						url: '/api/user'
+					});
+				};
+			}])
+
+		*/
+			//用provider()来定义服务,可以在config()函数中对服务进行动态配置
+			.provider('githubService', function(){
+				this.githubUrl = 'https://github.com';
+				this.setGithubUrl = function(url){
+					//通过.config改变默认属性
+					if(url) { githubUrl = url; }
+				};
+				//必须有这个 $get函数
+				this.$get = function($http) {
+					var self = this;
+					var service = {
+						url: self.githubUrl,
+						user: {},
+						setName: function(newName) {
+							self.setGithubUrl();
+							service.user['name'] = newName;
+						},
+						setEmail: function(newEmail){
+							service.user['email'] = newEmail;
+						}
+						// save: function(){
+						// 	return $http.post(self.githubUrl + '/users', {
+						// 		user: service.user
+						// 	})
+						// }
+					};
+					return service;
+				}
+			})
+			//config里面是 myFilterProvider
+			.provider('myFilter', function(){
+				var service = {
+					queries: {
+						xs: 'screen and (max-width: 480px)',
+						sm: 'screen and (min-width: 481px) and (max-width: 768px)'
+					},
+					$get: function($window){
+						return function(data, index){
+							var mq = service.queries[index];
+						}
+					}
+				};
+				return service;
+			})
+			//将一个已经存在的变量值注册为服务,并将其注入到应用的其他部分中
+			.constant('apiKey', 'xs123456md')
+			.controller('myCtrl', ['$scope', 'githubService', 'apiKey', function($scope, githubService, apiKey){
+				$scope.name = "123";
+				console.log(apiKey);
+				console.log(githubService.url);
+				githubService.setName();
+				console.log(githubService.url);
+			}]);
+	</script>
 </body>
 </html>
