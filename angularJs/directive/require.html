@@ -78,7 +78,7 @@
 
 					//ngModelController 的属性
 					console.log(ngModel.$viewValue);
-					console.log(ngModel.$modelValue);
+					console.log(ngModel.$modelValue);  //模型值,赋给ng-model的值,2者不一定相等, $viewValue同步到$modelValue要经过一系列操作
 					console.log(ngModel.$error);  //所有验证失败的验证名和失败信息组成的 json 对象
 					console.log(ngModel.$pending);  //所有正在进行中的异步验证都会放在这个对象里
 					console.log(ngModel.$dirty);  //元素和用户发生过交互 就是true
@@ -87,6 +87,16 @@
 					console.log(ngModel.$invalid);
 					console.log(ngModel.$touched);  //如果元素已经失去过焦点  就是true
 					console.log(ngModel.$untouched);
+
+					//方法
+					//由函数组成的数组,主要用来对值进行格式化和转换,当数据模型值发生变化时,里面的函数会被一一执行
+					ngModel.$formatters.push(function(value){
+						return $filter('date')(value, 'yyyy-mm-dd');
+					})
+					//也是由函数组成的数组, 主要用来做验证和转换值
+					ngModel.$parsers.unshift(function(){
+
+					})
 				}
 			}
 		};
