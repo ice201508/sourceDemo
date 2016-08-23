@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+	<meta charset="UTF-8">
+	<title>$watch/$digest/$apply</title>
+</head>
+<body ng-controller="myCtrl" class="container">
+	<p>{{name}}</p>
+
+	<script src="angular.js"></script>
+	<script>
+		var app = angular.module('app', []);
+
+		//如{{aModel}}表达式,angularjs背后就为这个数据模型设置了一个监听器,类似$scope.$watch('aModel', fn),
+		//ng- 去改变一个数据模型时，angularjs就会自动调用$digest()触发$digest循环, 循环开始就会启动每一个监听器, 如果模型的值发生改变，对应的监听函数就会被执行， angularjs内建的指令会自动触发$digest循环
+		//脏值检查: $digest循环并不只是运行一次,当前的循环结束后,它会再次启动检查是否有数据发送改变
+		//$digest循环至少会循环2次即使监听函数没有更改任何数据模型
+		//$scope.$apply()会自动调用$rootScope.$digest(),之后,逐步遍历所有子作用域来调用监听器(watcher)
+		app.controller('myCtrl', ['$scope', function($scope){
+			$scope.name = 'Lucy';
+			console.log($scope.$$phase);
+			$scope.getMessage = function(){
+				setTimeout(function(){
+					$scope.name = "fetched after 2 seconds";
+					console.log('2s: ' + $scope.name);
+					//人为的调用$apply(), angularjs只会关心在执行上下文中发生的数据模型的变化. 如果我们更改了一个不再angularjs执行上下文中的数据模型,就需要人为的调用$apply()
+					$scope.$apply();
+				}, 2000);
+			}
+			$scope.getMessage();
+
+
+			function fn(){
+				setTimeout(function(){
+					//这样传入函数的时候,函数的调用时包含在try...catch中的,任何异常都能被$exceptionHandler服务所接收
+					$scope.$apply(function(){
+						$scope.name = "fetched after 4 seconds";
+						console.log('4s: ' + $scope.name);
+					})
+				}, 4000);
+			}
+			fn()
+		}]);
+
+	</script>
+</body>
+</html>

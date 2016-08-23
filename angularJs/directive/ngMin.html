@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>自定义ngMin/Max</title>
+</head>
+<body ng-controller="myCtrl" class="container">
+	<p>{{name}}</p>
+
+	<form name="myForm" novalidate>
+		min: <input type="text" ng-model="min">{{min}}<br>
+		max: <input type="text" ng-model="max"><br>
+		value: 
+				<input type="number" ng-model="value" ng-min="min" ng-max="max" name="value"><br>
+		<p>value = {{value}}</p>
+		<p>value.$valid = {{myForm.value.$valid}}</p>
+		<p>value.$error = {{myForm.value.$error}}</p>
+	</form>
+
+	<script src="angular.js"></script>
+	<script>
+		var app = angular.module('app', []);
+
+		function isEmpty(value){
+			return angular.isUndefined(value) || value === '' || value === null || value !== value;
+		}
+
+		app.controller('myCtrl', ['$scope', function($scope){
+			$scope.name = 'Lucy';
+			$scope.min = 1;
+			$scope.max = 500;
+		}]);
+
+		//当视图上输入的无效的值时, $modelValue上是不会被绑定新值的
+		app.directive('ngMin', ['$filter', function($filter){
+			return {
+				restrict: 'A',
+				require: 'ngModel',
+				link: function(scope, elem, attr, ctrl){
+					scope.$watch(attr.ngMin, function(){
+						ctrl.$setViewValue(ctrl.$viewValue);
+					});
+					var minValidator = function(value){
+						//console.log(value,ctrl.$viewValue, ctrl.$modelValue);
+						var min = scope.$eval(attr.ngMin) || 0;
+						if(!isEmpty(value) && value < min){
+							ctrl.$setValidity('ngMin', false);
+							return undefined;
+						} else {
+							ctrl.$setValidity('ngMin', true);
+							return value;
+						}
+					};
+
+					function pa1(){
+						console.log('123');
+					}
+					function pa2(){
+						console.log('456');
+					}
+
+					ctrl.$parsers.push(minValidator);
+					ctrl.$formatters.push(minValidator);
+				}
+			}
+		}]);
+
+		app.directive('ngMax', function(){
+			return {
+				restrict: 'E',
+				required: 'ngModel',
+				link: function(scope, elem, attr, ctrl){
+					scope.$watch(attr.ngMax, function(){
+						ctrl.$setViewValue(ctrl.$viewValue);
+					});
+					var maxValidator = function(value){
+						var max = scope.$eval(attr.ngMax) || Infinity;
+						if(!isEmpty(value) && value > max){
+							ctrl.$setValidity('ngMax', false);
+							return undefined;
+						} else {
+							ctrl.$setValidity('ngMax', true);
+							return value;
+						}
+					};
+
+					ctrl.$parsers.push(maxValidator);
+					ctrl.$formatters.push(maxValidator);
+				}
+			}
+		});
+
+		angular.bootstrap(document.body, ['app']);
+	</script>
+</body>
+</html>
