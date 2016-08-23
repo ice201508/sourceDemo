@@ -88,15 +88,30 @@
 					console.log(ngModel.$touched);  //如果元素已经失去过焦点  就是true
 					console.log(ngModel.$untouched);
 
-					//方法
-					//由函数组成的数组,主要用来对值进行格式化和转换,当数据模型值发生变化时,里面的函数会被一一执行
-					ngModel.$formatters.push(function(value){
-						return $filter('date')(value, 'yyyy-mm-dd');
-					})
-					//也是由函数组成的数组, 主要用来做验证和转换值
-					ngModel.$parsers.unshift(function(){
+					function format(value){
+						console.log(123);
+						return $filter('date')(value, 'yyyy-MM-dd')
+					}
+					function parse(){
+						console.log(ctrl.$viewValue);
+						console.log(ctrl.$modelValue);
+						return ctrl.$modelValue;
+					}
 
-					})
+					function pa(){
+						console.log('123456789');
+					}
+
+					//数据模型的值发生变化时,里面的函数会一一执行
+					ctrl.$formatters.push(format);  //格式化数据到view层 (model to view)
+					//当视图view层的值发生变化时,依次指令$parsers里面的函数,把每一个函数的执行结果传递给下一个函数,最后一个函数执行后的值传递到model中
+					ctrl.$parsers.unshift(parse);   //视图数据保存到model层 (view to model)
+
+					//也是由函数组成的数组, 当视图的值发生变化的时候里面的函数被一一调用, 类似$watch
+					ctrl.$viewChangeListeners.push(pa);
+					//console.log(ctrl.$viewChangeListeners);
+					//将模型的值同步到视图上
+					//console.log(ctrl.$render());
 				}
 			}
 		};
