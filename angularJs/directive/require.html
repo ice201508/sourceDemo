@@ -55,6 +55,8 @@
 					//当ng-model绑定的值被程序改变了, $modelValue和$viewValue都和上次不一样了
 					//$modelValue绑定的数据模型的模型值,$viewValue指令元素的视图中实际的值, 这2个值不一定相等,$viewValue一定等于$setViewValue(value)中的value值,虽然调用了$setViewValue,但由于设置了ngModelOptions的debounce属性,所以会延迟，等到同步时间到了,value的值才会更新到$modelValue上
 					//$rollbackViewValue() 如果把视图值回滚到数据模型的值时,$render()会被调用, 指定UI的更新方式
+
+					//在ngModel发生改变的时候框架自动调用,同步$modelValue和$viewValue, 即刷新页面
 					ngModel.$render = function(){
 						elem.html($sce.getTrustedHtml(ngModel.$viewValue || ''));
 					};
@@ -73,6 +75,7 @@
 							html = '';
 						}
 						console.log(html);
+						//当$viewValue发生改变的时候,通过此方法,同步更新$modelValue
 						ngModel.$setViewValue(html);
 					}
 
