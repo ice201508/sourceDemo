@@ -59,8 +59,8 @@
 			var d1 = angular.element('.header');  //引入了jquery的写法
 			console.log(d1);
 			//未引入jquery时
-			angular.element(document.querySelector('.header'));
-			var d2 = angular.element(document).find('.header');
+			var d3 = angular.element(document.querySelector('.header'));   ==> DOM API
+			var d2 = angular.element(document).find('.header');   ==>  $document.find('header')
 			console.log(d2);
 			console.log(angular.isElement(angular.element('.header')));
 
