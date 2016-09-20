@@ -1,11 +1,61 @@
-<!DOCTYPE html>
+<!DOCTYPE html ng-app='app'>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<title>Peomise</title>
 </head>
-<body>
+<body ng-controller="myController">
 	
 	<script src='./angular.js'></script>
+	<script>
+		var app = angular.module('app', []);
+		app.factory('customHttp', ['$http', $q, customHttp]);
+		app.controller('myController', ['$scope', myController]);
+
+		function customHttp($http, $q){
+
+			function httpSend(url, method, param, headConfig){
+				var deferred = $q.defer();
+
+				function success(res){
+					var res_data = res.data;
+					switch(res_data.code) {
+						case 0:
+							deferred.resolve(res_data);
+						default:
+							deferred.reject(res_data);
+					}
+				}
+
+				function error(res){
+					deferred.reject({'code': 500, 'message': 'error'});
+				}
+
+				switch(method) {
+					var config = {'url': url, 'method': 'GET'};
+					case 'GET':
+						_config = angular.extend(config, headConfig);
+						$http(_config).then(success, error);
+					case 'POST':
+						var _config = angular.extend(config, {'data': param}, headConfig);
+						$http(_config).then(success, error);
+					default:
+						;
+				}
+				
+
+				return deferred.promise;
+			}
+
+			return {
+				'httpSend': httpSend
+			}
+			
+		}
+
+		function myController($scope){
+
+		}
+	</script>
 </body>
 </html>
