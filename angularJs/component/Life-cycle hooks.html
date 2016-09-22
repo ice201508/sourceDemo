@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>component</title>
+	<link rel="stylesheet" href="./bootstrap.css">
+</head>
+<body>
+	<div class="container" ng-app="demo" ng-controller="RootController as root">
+	
+		<pre>Root view: {{ root.view }}</pre>
+		<header-component view="root.view" on-view-change="root.view = $event.view2"></header-component>
+		<main-component view="root.view" set-view="root.setView('传入函数')"></main-component>
+		
+	</div>
+
+	<script src="jquery.js"></script>
+	<script src="angular.js"></script>
+	<script>
+		angular.module('demo', [])
+
+		.controller('RootController', function() {
+			this.view = 'table';
+
+			this.setView = function(data){
+				console.log('data: ', data);
+			}
+		})
+
+		.component('headerComponent', {
+			template: `
+				<h3>Header component</h3>
+				<a class="btn btn-default btn-sm" ng-class="{'btn-primary': $ctrl.view === 'list'}" ng-click="$ctrl.setView('list')">List</a>
+				<a class="btn btn-default btn-sm" ng-class="{'btn-primary': $ctrl.view === 'table'}" ng-click="$ctrl.setView('table')">Table</a>
+			`,
+			controller: function() {
+				this.setView = function(view) {
+					this.view = view
+					this.onViewChange({$event: {view2: view}})
+				}
+			},
+			bindings: {
+				view: '<',
+				onViewChange: '&'
+			}
+		})
+
+		.component('mainComponent', {
+			template: `
+				<h4>Main component</h4>
+				Main view: {{ $ctrl.view }}
+				<a class="btn btn-default btn-sm" ng-click="$ctrl.getView($ctrl.view)">click</a>
+			`,
+			bindings: {
+				view: '<',
+				setView: '&'
+			},
+			controller: function(){
+				var ctrl = this;
+				this.getView = function(data){
+					console.log(data);
+					ctrl.setView();
+				}
+			}
+		})
+	</script>
+</body>
+</html>
