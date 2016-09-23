@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" ng-app='app'>
+<head>
+	<meta charset="UTF-8">
+	<title>Lodash</title>
+</head>
+<body ng-controller="myCtrl">
+	<div>
+		<p ng-bind="user.name"></p>
+		<ul>
+			<li ng-repeat="item in arr">{{item.name}},,,{{item.age}},,{{item.addr}}</li>
+		</ul>
+		<p><button ng-click="select1()">click</button> <button ng-click="select2()">click2</button></p>
+	</div>
+
+	<script src='./angular.js'></script>
+	<script src='./ng-lodash.js'></script>
+	<script>
+		//Deferred execution 延期执行
+		//_.chain() 转成lodash对象 LodashWrapper， 可以执行链式操作，即不断的.method()操作， 最后用.value()求值
+		//sortBy() 排序， reverse() 数组倒序，map() 用函数操作后返回一个数组
+		var app = angular.module('app', ['ngLodash']);
+		app.controller('myCtrl', ['$scope', 'lodash', function($scope, _){
+			$scope.user = {
+				'name': 'Lucy'
+			};
+			$scope.arr = [
+				{'name': 'aack1', 'age': 21, 'addr': '北京1'},
+				{'name': 'cack2', 'age': 22, 'addr': '北京2'},
+				{'name': 'back3', 'age': 23, 'addr': '北京3'},
+				{'name': 'jack4', 'age': 24, 'addr': '北京4'},
+				{'name': 'jack5', 'age': 25, 'addr': '北京5'}
+			];
+
+			$scope.select1 = function(){
+				$scope.arr =  _.reverse(_.sortBy($scope.arr, ['age', 'name']));
+			}
+			$scope.select2 = function(){
+				//建立一个显示/隐式链对象，将(操作并返回arrays,collections,function)的方法串起来，那些返回唯一值或者可能返回原生数据类型的会自动结束链式翻译
+				$scope.arr = _.chain($scope.arr).sortBy('name').reverse().value();
+				console.log(_($scope.arr));
+			}
+
+			var wrapped = _([1,2,3]);
+			wrapped.reduce(function(total, n){  //reduce是不能加再链条(chainable)中间的，所以能立即执行计算
+				console.log(total,n)
+				//return total+n;
+			})
+			var squares = wrapped.map(function(n){ //map中中间链，返回的是一个lodash对象
+				return n*n;
+			});
+			console.log(squares.value());
+			console.log(_.map([4,8],function(n){return n*n}));  //一般的方法都有原始写法和链式(chain)写法
+		}])
+	</script>
+</body>
+</html>

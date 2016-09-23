@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>component</title>
+	<link rel="stylesheet" href="./bootstrap.css">
+</head>
+<body>
+	<div class="container" ng-controller="RootController as root">  <!-- 不用as的话， 组件中是独立作用域，要找对应的父作用域下的数据需要用$parent.$parent.，ngIf,ngInclude,组件都会生成一个独立作用域-->
+		<p>{{root.name}}</p>
+		<p>{{root.rootCtrl | json}} <input type="button" value="input" ng-click="root.chang()"><button ng-click="root.change()">button</button><a ng-click="root.change()">alink</a></p>
+		
+		<parent-component>
+			<left-side root-ctrl='root.rootCtrl' transfer= 'transfer'></left-side>
+		</parent-component>
+		
+	</div>
+
+	<script src="jquery.js"></script>
+	<script src="angular.js"></script>
+	<script>
+		angular.module('app', [])   //http://www.tuicool.com/articles/fUrQZzi //https://toddmotto.com/on-init-require-object-syntax-angular-component/
+
+		.controller('RootController', function(){
+			var that = this;
+			this.name = 'Lucy';
+			this.rootCtrl = {
+				'path': 'root',
+				'in_deep': 2
+			}
+			this.change = function(){
+				that.rootCtrl.in_deep += 1;
+			}
+		})
+
+		//生命周期钩子(是一些简单的函数,在应用组件特定生命周期被调用), 
+		// $onInit, $postLink, $onChange,
+
+		.component('parentComponent', {
+			transclude: true,
+			controller: function(){
+				this.name= "parent scope";
+				this.getParentName = function(){
+					console.log('fn in parent');
+				}
+			},
+			template: `<div>{{$ctrl.name}}<div ng-transclude></div></div>`  //不能写<div ng-transclude>{{$ctrl.name}}</div> 这里面的是给嵌套指令替换的 ng-transclude
+		})
+
+		.component('leftSide', {
+			require:  {   //让一个组件从另外的组件中继承方法和数据  (后面接对象)写法和指令不同，指令是 require: '^parent'
+				parentComponent: "^^parentComponent"  //或者写 parentComponent: '^^' , ^^表示会到当前组件的父组件中搜寻parentComponent的控制器,  ^表示先在当前指令中搜寻，没找到之后再去父组件中找
+			},
+			bindings: {
+				rootCtrl: '=',
+				transfer: '&'
+			},
+			//组件是独立作用域,没有$scope的，所以变量都是写在this上面, 组件默认用$ctrl调用,类似$scope
+			template: `<div><h3>{{$ctrl.state}}</h3>hello, {{$ctrl.name}}<p>--> {{$ctrl.rootCtrl}}</p> <button class="btn btn-primary btn-sm" ng-click="$ctrl.getInfo()">click</button></div>`,
+			controller: function(){
+				var ctrl = this;
+				ctrl.state = "not load";
+				console.log(ctrl.parentComponent); //这里是访问不到父作用域的内容的，因为组件还没有准备好
+				
+				ctrl.$onInit = function(){ //进行一些初始化工作
+					ctrl.name = 'jack'; //直接写在外面不好，浮在控制器各个角落
+					ctrl.age = 25;
+					ctrl.state = "loaded";  //覆盖外面生命的值
+					console.log(ctrl.parentComponent);   //根据定义的变量访问父作用域的内容
+				}
+
+				ctrl.getInfo = function(){
+					ctrl.rootCtrl.in_deep += 1;
+					console.log(ctrl.name + ':' + ctrl.age + ":" + ctrl.state);
+				}
+
+				//通过方法和外界通信，将内部的数据暴露给外面某个作用域使用, 在页面处传送一个需要数据的作用域的方法
+				ctrl.transfer = function(){
+					return ctrl;
+				}
+
+				//指令中compile函数会返回一个 pre 和 post 链接函数， postLink函数可以在编译的最后阶段(子元素已经被编译和链接)来处理一些逻辑, 
+				ctrl.$postLink = function(){ //在所有的子元素被链接后触发
+					//不适合DOM操作和绑定事件，最好用带模板的指令封装
+				}
+
+				ctrl.$onChange = function(){
+					
+				}
+			}
+		});
+
+		document.addEventListener('DOMContentLoaded', function(){
+			angular.bootstrap(document, ['app']);
+		});
+	</script>
+</body>
+</html>
