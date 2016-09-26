@@ -11,7 +11,7 @@
 		<p>{{root.rootCtrl | json}} <input type="button" value="input" ng-click="root.chang()"><button ng-click="root.change()">button</button><a ng-click="root.change()">alink</a></p>
 		
 		<parent-component>
-			<left-side root-ctrl='root.rootCtrl' transfer= 'transfer'></left-side>
+			<left-side root-ctrl='root.rootCtrl' my-transfer= 'root.transfer(handler)'></left-side>
 		</parent-component>
 		
 	</div>
@@ -23,6 +23,7 @@
 
 		.controller('RootController', function(){
 			var that = this;
+			var ori_method = null;
 			this.name = 'Lucy';
 			this.rootCtrl = {
 				'path': 'root',
@@ -30,18 +31,32 @@
 			}
 			this.change = function(){
 				that.rootCtrl.in_deep += 1;
+				if(ori_method !== null){
+					console.log('123');
+					ori_method(this.rootCtrl.in_deep);
+				}
 			}
+			this.transfer = function(handler){
+				ori_method = handler;
+				console.log("transfer: " + ori_method);
+			}
+			/* 放在这里不会执行，因为指令的编译链接过程还没完成，ori_method还是null
+			if(ori_method !== null){
+				console.log('123');
+				ori_method(4);
+			}
+			*/
 		})
 
 		//生命周期钩子(是一些简单的函数,在应用组件特定生命周期被调用), 
-		// $onInit, $postLink, $onChange,
+		// $onInit, $postLink, $onChange, $doCheck, $onDestroy,
 
 		.component('parentComponent', {
 			transclude: true,
 			controller: function(){
 				this.name= "parent scope";
 				this.getParentName = function(){
-					console.log('fn in parent');
+					console.log('fn in parent -->' + this.name);
 				}
 			},
 			template: `<div>{{$ctrl.name}}<div ng-transclude></div></div>`  //不能写<div ng-transclude>{{$ctrl.name}}</div> 这里面的是给嵌套指令替换的 ng-transclude
@@ -53,7 +68,7 @@
 			},
 			bindings: {
 				rootCtrl: '=',
-				transfer: '&'
+				transfer: '&myTransfer'
 			},
 			//组件是独立作用域,没有$scope的，所以变量都是写在this上面, 组件默认用$ctrl调用,类似$scope
 			template: `<div><h3>{{$ctrl.state}}</h3>hello, {{$ctrl.name}}<p>--> {{$ctrl.rootCtrl}}</p> <button class="btn btn-primary btn-sm" ng-click="$ctrl.getInfo()">click</button></div>`,
@@ -66,18 +81,26 @@
 					ctrl.name = 'jack'; //直接写在外面不好，浮在控制器各个角落
 					ctrl.age = 25;
 					ctrl.state = "loaded";  //覆盖外面生命的值
+					ctrl.parentComponent.getParentName();
 					console.log(ctrl.parentComponent);   //根据定义的变量访问父作用域的内容
 				}
 
 				ctrl.getInfo = function(){
 					ctrl.rootCtrl.in_deep += 1;
-					console.log(ctrl.name + ':' + ctrl.age + ":" + ctrl.state);
+					console.log(ctrl.name + ':' + ctrl.age + ":" + ctrl.state + "----" + ctrl.parentComponent);
 				}
 
-				//通过方法和外界通信，将内部的数据暴露给外面某个作用域使用, 在页面处传送一个需要数据的作用域的方法
-				ctrl.transfer = function(){
-					return ctrl;
+				function expose_self(params){
+					console.log('组建内部的数据传到外面: ' + ctrl.name + "-->>" + ctrl.parentComponent);
+					return params*params;
 				}
+
+				//将组件内部数据传送到父作用域
+				//通过方法和外界通信，将内部的数据暴露给外面某个作用域使用, 在页面处传送一个需要数据的作用域的方法
+				// ctrl.transfer = function(){  //不用定义，直接调用外面传进来的方法
+				// 	return ctrl;
+				// }
+				ctrl.transfer({'handler': expose_self});
 
 				//指令中compile函数会返回一个 pre 和 post 链接函数， postLink函数可以在编译的最后阶段(子元素已经被编译和链接)来处理一些逻辑, 
 				ctrl.$postLink = function(){ //在所有的子元素被链接后触发
@@ -86,6 +109,14 @@
 
 				ctrl.$onChange = function(){
 					
+				}
+
+				ctrl.$doCheck = function(){
+
+				}
+
+				ctrl.$onDestroy = function(){
+
 				}
 			}
 		});
