@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>component</title>
+	<link rel="stylesheet" href="./bootstrap.css">
+</head>
+<body>
+	<body ng-app="docsTabsExample">
+	<my-tabs>
+	<my-pane title="Hello">
+		<h4>Hello</h4>
+		<p>Lorem ipsum dolor sit amet</p>
+	</my-pane>
+	<my-pane title="World">
+		<h4>World</h4>
+		<em>Mauris elementum elementum enim at suscipit.</em>
+		<p><a href ng-click="i = i + 1">counter: {{i || 0}}</a></p>
+	</my-pane>
+</my-tabs>
+
+	<script src="jquery.js"></script>
+	<script src="angular.js"></script>
+	<script>
+		(function(angular) {
+			'use strict';
+			angular.module('docsTabsExample', [])
+				.component('myTabs', {
+					transclude: true,
+					controller: function() {
+						var panes = this.panes = []; //组件数组，后面的addPane也是传入的子组件
+						this.select = function(pane) {
+							//将当前的tab标签设为被选中
+							angular.forEach(panes, function(pane) {
+								pane.selected = false;
+							});
+							pane.selected = true;
+						};
+						this.addPane = function(pane) {
+							if (panes.length === 0) {
+								this.select(pane);
+							}
+							panes.push(pane);
+						};
+					},
+					//templateUrl: 'my-tabs.html'
+					template: `
+							<div class="tabbable">
+								<ul class="nav nav-tabs">
+									<li ng-repeat="pane in $ctrl.panes" ng-class="{active:pane.selected}">
+										<a href="" ng-click="$ctrl.select(pane)">{{pane.title}}</a>
+									</li>
+								</ul>
+								<div class="tab-content" ng-transclude></div>
+							</div>`
+				})
+				.component('myPane', {
+					transclude: true,
+					require: {
+						tabsCtrl: '^myTabs'
+					},
+					bindings: {
+						title: '@'
+					},
+					controller: function() {
+						this.$onInit = function() {
+							console.log(this);
+							this.tabsCtrl.addPane(this);
+						};
+					},
+					//templateUrl: 'my-pane.html'
+					template: `<div class="tab-pane" ng-show="$ctrl.selected" ng-transclude></div>`
+				});
+			})(window.angular);
+	</script>
+</body>
+</html>

@@ -2,67 +2,112 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>component</title>
+	<title>angular1.5.x组件架构和单向数据流(数据输入，事件输出)</title>
 	<link rel="stylesheet" href="./bootstrap.css">
 </head>
 <body>
-	<div class="container" ng-app="demo" ng-controller="RootController as root">
-	
-		<pre>Root view: {{ root.view }}</pre>
-		<header-component view="root.view" on-view-change="root.view = $event.view2"></header-component>
-		<main-component view="root.view" set-view="root.setView('传入函数')"></main-component>
-		
-	</div>
+	<body ng-app="app">
+	<parent-component></parent-component>
 
 	<script src="jquery.js"></script>
 	<script src="angular.js"></script>
 	<script>
-		angular.module('demo', [])
+		(function(angular) {
+			'use strict';
+			var app =angular.module('app', []);
 
-		.controller('RootController', function() {
-			this.view = 'table';
+			//$onChanges被调用的情况: 组件初始化， 单向数据绑定(< @)
+			//单向数据绑定就是父组件的数据发生变化后通知子组件， 子组件的数据发送变化不会改变父组件，及没有被angular所$watch
+			//bindings和$onChanges已经覆盖了单向数据流，为了让数据能够回流到parentComponent，需要委托一个函数作为事件的回调函数,且有一个event作为最后传递回来的参数
+			app.component('childComponent', {
+					bindings: {
+						user: '<',  //单向绑定，表示单向数据流(这些值都是通过父组件传递的)
+						age: '@',  //非对象类型的绑定
+						onUpdate: '&'   //绑定一个事件
+					},
+					template: `
+						<div>
+							<a href="#" ng-click="$ctrl.change();">子组件发生改变不会通知父组件(单向绑定)</a>
+							<pre>子组件的user:{{$ctrl.user | json}}</pre> AGE: {{$ctrl.age}}
+							<p><a href="" ng-click="$ctrl.saveUser();">update</a></p>
+						</div>
+					`,
+					controller: function($rootScope){
+						//由于js的引用传递机制，对象属性的改变还是会改变父组件中的对象，就和双向数据绑定一样了，可以用深拷贝来处理单向数据流传递下来的对象,即传递下来的对象不会在子组件中被更改
+						this.$onChanges = function(changes){
+							console.log(changes.user.isFirstChange()); //$onChanges的另一个特性，用来判断是否是第一次调用,可以再初始化阶段进行一些操作
+							console.log(changes);
+							//this.user = changes;  获取不到变化，传递的是整个changes对象
+							//this.user = changes.user.currentValue;
+							//this.user = angular.copy(changes.user.currentValue);
+							if(changes.user){
+								this.user = angular.copy(this.user);
+							}
+							if(changes.age){
+								this.age = changes.age.currentValue;
+							}
+						}
 
-			this.setView = function(data){
-				console.log('data: ', data);
-			}
-		})
+						this.$onInit = function(){
+							$rootScope.$emit('selfDefined', '指令可以使用服务吗？$rootScope');
+						}
 
-		.component('headerComponent', {
-			template: `
-				<h3>Header component</h3>
-				<a class="btn btn-default btn-sm" ng-class="{'btn-primary': $ctrl.view === 'list'}" ng-click="$ctrl.setView('list')">List</a>
-				<a class="btn btn-default btn-sm" ng-class="{'btn-primary': $ctrl.view === 'table'}" ng-click="$ctrl.setView('table')">Table</a>
-			`,
-			controller: function() {
-				this.setView = function(view) {
-					this.view = view
-					this.onViewChange({$event: {view2: view}})
-				}
-			},
-			bindings: {
-				view: '<',
-				onViewChange: '&'
-			}
-		})
+						this.change = function(){
+							this.user.name += 2;
+							this.user.location += 'b';
+							this.age += 5;
+						}
 
-		.component('mainComponent', {
-			template: `
-				<h4>Main component</h4>
-				Main view: {{ $ctrl.view }}
-				<a class="btn btn-default btn-sm" ng-click="$ctrl.getView($ctrl.view)">click</a>
-			`,
-			bindings: {
-				view: '<',
-				setView: '&'
-			},
-			controller: function(){
-				var ctrl = this;
-				this.getView = function(data){
-					console.log(data);
-					ctrl.setView();
-				}
-			}
-		})
+						//在子组件中更新的数据(深拷贝的数据)，然后通过传递进来的回调函数将更新后的数据传递出去，数据从父组件到子组件，在子组件中保存的时候
+						this.saveUser = function(){
+							//并不是把this.user对象之间传递到回调函数中,而是构建一个$event对象，这样在模板中可以使用$ctrl.updateUser($event)保持数据一致
+							this.onUpdate({
+								$event: {
+									user: this.user
+								}
+							});
+						}
+					}
+				})
+				app.component('parentComponent', {
+					template: `
+						<div>
+							<a href="#" ng-click="$ctrl.changeUser();">这里会在child组件调用$onChanges钩子</a>
+							<p><pre>父组件的user:{{$ctrl.user | json}}</pre>AGE： {{$ctrl.age}}</p>
+							<child-component user="$ctrl.user" on-update="$ctrl.updateUser($event)" age="{{$ctrl.age}}"></child-component>
+						</div>
+					`,
+					controller: function($rootScope){
+						this.$onInit= function(){
+							this.user = {
+								name: 'Lucy',
+								location: '北京'
+							};
+							this.age = 25;
+						};
+						var eventSelf = $rootScope.$on('selfDefined', function(e, d){console.log('d', d)});  //on会返回一个清除该事件的函数
+
+						var i =1;
+
+						//父组件中向子组件传递的数据发生改变后(bindings就会把这个变化传递到子组件中)会调用子组件的$onChanges钩子
+						this.changeUser = function(){
+							i++;
+							this.age += 1;
+							//this.user.name += 1;
+							//this.user.location += 'a';   //这样改变对象 在子组件看来并没有改变,  打印出来的变化对象changes里面没有user属性
+							this.user = {
+								name: 'Jack'+i,
+								location: '上海， CHINA '+i
+							}
+						}
+
+						//获得子组件中改变后的数据，达到双向绑定的功能, 并且将事件回调函数传递到子组件中
+						this.updateUser = function(event){
+							this.user = event.user;
+						}
+					}
+				});
+		})(window.angular);
 	</script>
 </body>
 </html>

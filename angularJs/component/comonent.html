@@ -25,6 +25,7 @@
 			var that = this;
 			var ori_method = null;
 			this.name = 'Lucy';
+
 			this.rootCtrl = {
 				'path': 'root',
 				'in_deep': 2
@@ -32,8 +33,7 @@
 			this.change = function(){
 				that.rootCtrl.in_deep += 1;
 				if(ori_method !== null){
-					console.log('123');
-					ori_method(this.rootCtrl.in_deep);
+					console.log(ori_method(this.rootCtrl.in_deep));
 				}
 			}
 			this.transfer = function(handler){
@@ -115,8 +115,14 @@
 
 				}
 
-				ctrl.$onDestroy = function(){
+				var eventSelf = $rootScope.$on('selfDefined', function(){...});  //on会返回一个清除改事件的函数
 
+				//类似 $scope.$on('$destroy', function(){...})  element.on('$destroy', function(){...})
+				this.$onDestroy = function(){
+					//可以将一些事件监听或者非原生逻辑处理干净
+					ctrl.$on('$destroy', function(){
+						eventSelf()
+					})
 				}
 			}
 		});
