@@ -11,7 +11,7 @@
 		<p>{{root.rootCtrl | json}} <input type="button" value="input" ng-click="root.chang()"><button ng-click="root.change()">button</button><a ng-click="root.change()">alink</a></p>
 		
 		<parent-component>
-			<left-side root-ctrl='root.rootCtrl' my-transfer= 'root.transfer(handler)'></left-side>
+			<child-side root-ctrl='root.rootCtrl' my-transfer= 'root.transfer(handler)'></child-side>
 		</parent-component>
 		
 	</div>
@@ -62,7 +62,7 @@
 			template: `<div>{{$ctrl.name}}<div ng-transclude></div></div>`  //不能写<div ng-transclude>{{$ctrl.name}}</div> 这里面的是给嵌套指令替换的 ng-transclude
 		})
 
-		.component('leftSide', {
+		.component('childSide', {
 			require:  {   //让一个组件从另外的组件中继承方法和数据  (后面接对象)写法和指令不同，指令是 require: '^parent'
 				parentComponent: "^^parentComponent"  //或者写 parentComponent: '^^' , ^^表示会到当前组件的父组件中搜寻parentComponent的控制器,  ^表示先在当前指令中搜寻，没找到之后再去父组件中找
 			},
