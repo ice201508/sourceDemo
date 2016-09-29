@@ -1,19 +1,182 @@
-<!DOCTYPE html ng-app='app'>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
 <head>
 	<meta charset="UTF-8">
-	<title>Peomise</title>
+	<title>Document</title>
 </head>
-<body ng-controller="myController">
-	
-	<script src='./angular.js'></script>
+<body ng-controller="myCtrl">
+	<p>{{name}}</p>
+	<p>
+		<a href="#" ng-click="toggle()">Toggle</a>
+		<a href="#" ng-click="then()">Then</a>
+		<a href="#" ng-click="success()">Success</a>
+		<a href="#" ng-click="create_promise()">Create_promise</a>
+	</p>
+	<div ng-switch="section">
+		<p ng-switch-when="yes">
+			happy
+		</p>
+		<p ng-switch-when="no">
+			sad
+		</p>
+		<p ng-switch-default>
+			default
+		</p>
+	</div>
+	<hr>
+	<p>{{progress}}</p>
+
+	<script src="jquery.js"></script>
+	<script src="angular.js"></script>
 	<script>
-		var app = angular.module('app', []);
-		app.factory('customHttp', ['$http', $q, customHttp]);
-		app.controller('myController', ['$scope', myController]);
+		var app = angular.module('myApp', [])
+		
+		app.controller('myCtrl', ['$scope','$timeout', '$http', '$q', 'GithubService', function($scope, $timeout, $http, $q, GithubService){
+			$scope.name = 'Lucy';
+			$scope.section = "yes";
 
-		function customHttp($http, $q){
+			//http://docs.ngnice.com/api/ng/service/$http
+			//$http返回一个promise对象,有一个标准的then方法和2个特殊的封装的方法success/error
+			//promise是一种用异步方式处理值的方法,promise是对象,代表一个函数最终可能的返回值或抛出的异常,常用语和远程对象打交道。看做远程对象的一个代理,Promise是一种异步处理模式
+			//promise是头等对象, 只有一个resolve或者reject会被调用到, 总是异步执行，不会阻塞
+			//Promise就是一种对执行结果不确定的一种预先定义，如果成功，就xxxx；如果失败，就xxxx，就像事先给出了一些承诺。
+			$scope.then = function(){
+				$http({
+					url: 'http://127.0.0.1:8001/newpos_api/get_money',
+					method: 'GET'
+				}).then(function(data){
+					console.log(data, status);
+				},function(data){
+					console.log(data)
+				});
+			}
 
+			$scope.success = function(){
+				$http({
+					url: 'http://127.0.0.1:8001/newpos_api/get_money',
+					method: 'GET'
+				}).success(function(data, status, header){
+					console.log(data)
+				}).error(function(){
+
+				});
+			}
+
+			//angularjs的事件循环, 在$rootScope.$evalAsync阶段中执行promise,promise会等待$digest循环结束
+			//创建一个promise
+			$scope.create_promise = function(){
+				//创建一个deferred对象,暴露了三个方法 resolve/reject/notify 以及一个处理promise的promise属性
+				//var deferred = $q.defer();
+				//执行promise， deferred.resolve({name: 'Ari', email: '@163.com'});
+				//拒绝promise，deferred.reject("can't update user"); 等同于使用一个“拒绝”来执行一个promise， deferred.resolve($q.reject("can't update user"))
+				//状态响应， notify(variable) 用promise的执行状态来进行响应, 在用promise时then方法里加上第三个函数调用 then(successFn, errorFn, notifyFn)
+
+				GithubService.makeMultipleRequest(['auser/beehive', 'angular/angular.js', 'react/react.js'])
+					.then(function(data){
+						//成功回调
+						console.log(data);
+					}, function(){
+						//失败回调
+					}, function(percentComplete){ //只有定义了notify才会有第三个函数存在
+						//状态变更回调
+						$scope.progress = percentComplete;
+					})
+					.cache(function(){
+
+					})
+					.finnal(function(){
+
+					});
+				
+			}
+
+			$scope.toggle = function(){
+				console.log($scope.section);
+				if($scope.section == "yes"){
+					$scope.section = "no";
+				} else {
+					$scope.section = "yes";
+				}
+			}
+			//$timeout返回一个promise对象
+			var timer = $timeout(function(){
+	    		console.log(Date.now(), "---Timeout executed");
+	    	}, 2000);
+
+	    	//将resolve(执行,分解)/reject(拒绝,排斥)处理函数绑定到timer promise上
+	    	timer.then(function(){
+	    		console.log(Date.now(), '---Timer resolved');
+	    	},function(){
+	    		console.log(Date.now(), '---Timer rejected');
+	    	})
+	    	
+	    	//当DOM元素从页面中被移除时,angularjs会在scope中触发$destory事件
+	    	$scope.$on("$destroy", function(event){
+	    		console.log("timeout destory");
+	    		$timeout.cancel(timer);
+	    	})
+		}]);
+
+		app.directive('bnDirective', function ($timeout) {
+		    function link(scope, elem, attr){
+		    	//$timeout返回一个promise对象
+		    	var timer = $timeout(function(){
+		    		console.log(Date.now(), "---Timeout executed");
+		    	}, 2000);
+
+		    	//将resolve/reject处理函数绑定到timer promise上
+		    	timer.then(function(){
+		    		console.log(Date.now(), '---Timer resolved');
+		    	},function(){
+		    		console.log(Date.now(), '---Timer rejected');
+		    	})
+		    	
+		    	//当DOM元素从页面中被移除时,angularjs会在scope中触发$destory事件
+		    	scope.$on("$destroy", function(event){
+		    		$timeout.cancel(timer);
+		    	})
+		    }
+
+		    return {
+		    	scope: false,
+		    	link: link
+		    }
+		});
+
+		app.factory('GithubService', ['$q', '$http', function($q, $http){
+			var getEventFromRepo = function(param){
+				return param;
+			}
+
+			//从一个promise创建多个长时间运行的请求,用notify函数发挥一个过程通知
+			var makeMultipleRequest = function(repo){
+				var d = $q.defer();
+				var percentComplete = 0;
+				var output = [];
+				// for(var i=0; i < repo.length; i++){
+				// 	output.push(getEventFromRepo(repo[i]));
+				// 	percentComplete = (i+1)/repo.length * 100;
+				// 	d.notify(percentComplete);
+				// }
+				// d.resolve(output);
+
+				$http.get("http://127.0.0.1:8001/newpos_api/get_money")
+					.success(function(data){
+						d.resolve(data.num);
+					})
+					.error(function(){
+						d.reject("url is error");
+					});
+
+				return d.promise;
+			}
+
+			return {
+				makeMultipleRequest: makeMultipleRequest
+			}
+		}]);
+
+		app.factory('customHttp', ['$http', '$q', function(){
 			function httpSend(url, method, param, headConfig){
 				var deferred = $q.defer();
 
@@ -28,7 +191,7 @@
 				}
 
 				function error(res){
-					deferred.reject({'code': 500, 'message': 'error'});
+					deferred.reject({'code': 500, 'message': '返回500时提示的错误信息'});
 				}
 
 				switch(method) {
@@ -50,12 +213,8 @@
 			return {
 				'httpSend': httpSend
 			}
-			
 		}
-
-		function myController($scope){
-
-		}
+		}]);
 	</script>
 </body>
 </html>
