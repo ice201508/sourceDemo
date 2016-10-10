@@ -1,4 +1,15 @@
 <?php
+//命名空间(必须在脚本的最前面)
+//解决用户编写的代码和php内部的类/函数/常量 或者 第三方类/函数/常量 之间的名字冲突
+
+//declare(encoding="UTF-8");  只有这一句可以写在namespace前面
+namespace MyProject {
+
+};
+
+namespace MyProject2{  //全局代码
+
+}
 header("Content-type: text/html; charset=utf-8");   //避免php 中文为乱码
 /*
  * php语法必须写在 <php ... ?> 之中
@@ -11,22 +22,51 @@ print "hello\n";
 echo "World"."<br>";  //字符串需要用. 来连接
 echo ('world中文');
 
+
 /**************************
  * 类型与变量
+ * 变量以$开头，变量名只能为字母，数字，_
+ * 变量不需要声明，变量在第一次赋值的时候被创建
  */
-$x = 0x13;
-var_dump($x);
+$x_global = 0x13;
+var_dump($x_global);
+
+//变量的作用域,  local(局部),global(全局，函数外定义的变量),static,parameter
+//static, 当一个函数完成时，所有的变量都会被删除，如果需要保存，需要用static声明
+//参数作用域，是函数的局部变量
 
 // 数组，php中都是关联型数组，类似其它语言中的哈希表或字典
 $arr = array('one' => 1, 'Two' => 'three', 'Three' => 3);
 $arr1 = ['one' => 1, 'Two' => 'three', 'Three' => 3];  // php5.4+
 $arr2 = ['one', 'two', 'three'];   //常规数组，索引从0开始
-echo $arr['Two'];
+echo $arr['Two'].count($arr).count($arr2);
 echo "<br>";
 
+//遍历关联数组
+foreach($arr as $x=>$x_value){
+	echo "Key=".$x.", Value=".$x_value;
+	echo "<br>";
+}
+
+//超级全局变量
+//$GLOBALS 是php的超级全局变量数组，变量名就是数组的键
+
+//魔术变量  __LINE__  __FILE__  __DIR__
+echo '这是第" ' .__LINE__ .' "行';
+echo '这是第" ' .__FILE__ .' "行';
+
+
+
 //*************************************函数
+//超过1000个内建函数，名称应该显示功能，字母或者_开头
+$x = 0x13;
 function add($x, $y = 1){
+	static $str = 1;
+	global $x_global, $x;  //使用全局作用域中的$x
+	echo $x_global.",static,".$str;
+	echo "<br>";
 	$result = $x + $y;
+	$str++;
 	return $result;
 }
 
@@ -54,6 +94,7 @@ echo $inc(2);
 
 
 //************************************类
+//$this代表自身对象
 class MyClass
 {
 	const MY_CONST       = 'value';  //常量
@@ -121,7 +162,7 @@ $my_other_class->myMethod();
 
 //abstract抽象类，implements，interface接口
 
-
+//php面向对象(成员变量，成员函数，继承，父类，子类，多态，重载，构造函数，析构函数，抽象，封装)
 
 
 
@@ -129,21 +170,6 @@ $my_other_class->myMethod();
 
 echo "<br>";
 ?> 标签外的语句
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
