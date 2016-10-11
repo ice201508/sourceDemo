@@ -110,3 +110,5 @@ angularjs 1和2中为了更好的控制组件的各种状态，提供了一些�
 })(window.angular);
 </script>
 ```
+
+angularjs 2中不再有$scope

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+
+	<div ng-controller="myCtrl">
+		<p>{{name}}</p>
+		<p>{{age}}</p>
+	</div>
+	
+	<script src="./angular.js"></script>
+	<script>
+		var app = angular.module('app', []);
+
+		//  https://segmentfault.com/a/1190000003096933
+		//$provide(不是$provider)是一个服务，在Auto模块中,这个服务下面有5个方法用来定义供应商，而供应商是用来提供服务的，被注入的东西就是供应商提供的服务
+		
+		//--------------------------constant 定义常量，值不能被修改，不能被装饰器decorator装饰，可以注入到任何地方
+		app.config(function($provide){
+			$provide.constant('movieTitle', 'the one');
+		})
+
+		app.controller('myCtrl', function($scope, movieTitle, movie){
+			$scope.name = movieTitle;
+			//expect(movieTitle).toEqual('the one');
+			$scope.age = movie;
+		});
+
+		//对应的语法糖  app.constant('movieTitle', 'the one');
+		
+		//-------------------------------$provide.value     值可以被修改，不能注入到config里面，能被decorator装饰
+		//-------------------------------$provide.service  可注入的构造器，一般用它在Controller中通信或者共享数据
+		app.config(function($provide){
+			$provide.service('movie', function(){  //可以不用返回任何东西，也可以返回一个自定义对象，angularjs会自动调用new来创建对象
+				this.title = 'the one';
+			})
+		})
+		//语法糖 app.service('movie', function(){this.title="the one"});
+		
+
+		//-------------------------------$provide.factory   和service区别，service是一个构造器。factory是一个普通函数，可以返回任何东西，是一个只有$get方法的provider
+
+
+		//-------------------------------$provide.provider 除了constant其他4个供应商都是provider的封装，必须有一个$get()方法，也可以说是一个可配置的factory
+		app.provider('movie', function(){  //定义一个供应商movie，但注入到config中必须是服务，有供应商提供的，所以要写成 驼峰法 movieProvider
+			var version;
+			return {
+				setVersion: function(value){
+					version = value;
+				},
+				$get: function(){
+					return {
+						title: 'the one' + ' ' + version
+					}
+				}
+			}
+		});
+
+		app.config(function(movieProvider){
+			movieProvider.setVersion('1.5.8');
+		});
+
+		angular.element(document).ready(function(){
+			angular.bootstrap(document, ['app']);
+		})
+	</script>
+</body>
+</html>
