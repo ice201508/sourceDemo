@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>js原型</title>
+</head>
+<body>
+	
+	<script>
+		/*
+		 * prototype 原型，是可以作为构造函数的 函数对象(function)的一个必备属性(保留属性)，值为一个对象，主要用来实现继承，原型自身也有一个原型，任何对象都可以成为原型, 原型默认有2个属性constructor __proto__
+		 * __proto__ 是(除了null)任意对象的内置属性 (即每个对象都有这个__proto__属性), 值为当前对象的构造函数，两者都是指向其所属类的原型对象([[Prototype]])
+		 * new的过程 => js引擎遇到new关键字，分配一片内存并创建一个空对象(并且将this指向这个对象) => js引擎将这个空对象的__proto__ 指向后面构造函数默认的 prototype  对象
+		 * construct属性 始终指向创建当前对象的构造函数, 是一个具体函数，__proto__是一个链
+		 */
+		
+		var fn1 = function(){
+			this.name = "fn1";
+			this.print = function(){
+				console.log("this.name= ",this.name);
+			}
+		}
+		console.log(fn1.prototype);
+		console.log(fn1.constructor);
+		console.log(fn1.__proto__);
+		var fn2 = function(){};
+
+		//使用赋值操作改变fn2 的原型，同时还必须将其原型的constructor属性指向其本身
+		fn2.prototype = new fn1();  //继承，构造函数fn2 构造出来的对象拥有fn1的属性和方法， --> 通过fn2构造函数构造出来的对象obj，自动拥有构造函数fn2的prototype对象的成员和方法
+
+		//fn2为构造函数 constructor， obj为实例 instance
+		var obj = new fn2(); // __proto__  指向这个对象的构造函数的prototype对象，
+		console.log("obj -> ", obj.constructor, obj.prototype, obj.__proto__);
+		console.log(fn2.prototype);  //fn2这个函数的内置属性prototype 的值是一个对象，这个对象里面有内置的属性__proto__，值为构造函数
+		obj.print();
+
+		var a = {'name': 'Lucy'};   // 火狐浏览器下 打印a, 会有__proto__ 属性，值为a的构造函数 Object
+
+		var v1 = 1;
+		var v2 = "hello";
+		var v3 = true;
+		var v4 = {};
+		var v5 = [1,2,3];
+		var v6 = function(){};  //这里v6是一个对象，函数对象
+
+		// Number, String, Bolean, Object, Array, Funtion  都是构造函数，可以用new 生成对象，但一般用字面量
+		// 函数有3种创建方式，4种使用方式
+		console.log('v1 constructor: ',v1.constructor,v1.prototype, v1.__proto__);
+		console.log('v2 constructor: ',v2.constructor,v2.prototype, v2.__proto__);
+		console.log('v3 constructor: ',v3.constructor,v3.prototype, v3.__proto__);
+		console.log('v4 constructor: ',v4.constructor,v4.prototype, v4.__proto__);
+		console.log('v5 constructor: ',v5.constructor,v5.prototype, v5.__proto__);
+		console.log('v6 constructor: ',v6.constructor,v6.prototype, v6.__proto__);
+
+		// 构造函数的原型(默认值为)指向实例的__proto__属性
+		var obj2 = new v6();
+		console.log(obj2.__proto__ == v6.prototype);
+
+		//js内置构造函数(都是函数对象)的construct，都是function Function(){}
+		console.log(Number.constructor, String.constructor, Boolean.constructor, Array.constructor, Object.constructor, Function.constructor);
+	</script>
+</body>
+</html>

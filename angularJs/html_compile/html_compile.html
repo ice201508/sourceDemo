@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+
+	<div ng-controller="myCtrl as parent">
+		<p>{{parent.name}}</p>
+	</div>
+	
+	<script src="../lib/angular.js"></script>
+	<script>
+		var app = angular.module('app', []);
+
+		app.controller('myCtrl', function(){
+			this.name = 'Lucy';
+		})
+
+		angular.element(document).ready(function(){
+			angular.bootstrap(document, ['app']);
+		})
+	</script>
+</body>
+</html>
