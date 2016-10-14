@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>js封装和继承</title>
+</head>
+<body>
+	<script>
+		/*
+		 *  JS封装采用  构造函数和原型继承的组合方式
+		 */
+		
+		function Cat(name, color){
+			this.name = name || 'default';
+			this.color = color || 'white';
+		}
+		// 将固定的属性和方法定义在prototype对象上，所有的实例都会共享prototype上的属性和方法；new生成实例的时候在内存中只会生成一次，减少内存的占用
+		// 配套prototype使用的方法 isPrototypeOf(), hasOwnProperty(), in遍历对象
+		Cat.prototype.type = "猫科动物";
+		Cat.prototype.eat = function (){
+			console.log("老鼠");
+		}
+		var cat1 = new Cat('大');
+		var cat2 = new Cat('小','黑色');
+		cat1.eat();
+
+		// ------------------------------------------构造函数的继承
+
+		//让Cat继承Animal
+		function Animal(){
+			this.species = "动物";
+		}
+
+		Cat.prototype = new Animal();   //相当于删除了prototype对象原来的值，赋一个新值，这样所有的Cat实例都会继承它prototype属性(即Animal对象)上的所有属性和方法，达到Cat继承Animal的目的
+		Cat.prototype.construct = Cat; //上面的赋值后会将prototype的constructor属性默认改为Animal，这是编程必须遵守的一点，修改了prototype对象，必须问新的prototype对象的consturctor重新赋值
+
+		// 上一种方法的改进，因为执行和建立Animal实例(new Animale() )效率比较低，也比较占内存
+		function Country(){  //创建一个新函数会默认创建一个prototype属性(对象)，该对象有2个属性, constructor属性(构造函数)和一个__proto__属性(对象)   ====> var country = new Function()
+			this.country = "中国";
+		}
+		// 如果不用new Country()去实现，必须手动指定prototype这个值，可以用new生成，也可以用字面量对象
+		Country.prototype = {
+			country : "prototype in 中国"
+		}
+		Country.prototype.construct = Country;   //这里必须手动指定，不然instanceof是错误的指向
+		console.log(Animal.prototype);
+		console.log(Country.prototype);
+
+		// 直接继承prototype(有缺点)。Cat.prototype = Animal.prototype 这样效率高，节省内存；但是修改Cat上的属性也会影响Animal上的属性，比如修改constructor时，Animal上的也变了
+		// --- 利用空对象作为中介， 封装成一个函数，这个函数是YUI库如何实现继承的方法
+		function extend(Child, Parent){
+			var F = function(){}  //F是一个构造函数，也是一个空对象
+			F.prototype = Parent.prototype;
+			Child.prototype = new F();   // 因为F 是空对象，所以几乎不占内存
+			Child.prototype.constructor = Child;
+		}
+
+		extend(Cat, Country);
+		var cat3 = new Cat('zhong', 'red');
+		console.log(cat3.country);  // 必须定义父级的prototype属性，可以供子级访问，不然这里是undefined
+
+	</script>
+</body>
+</html>

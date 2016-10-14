@@ -13,7 +13,7 @@
 		 * prototype 原型，是可以作为构造函数的 函数对象(function)的一个必备属性(保留属性)，值为一个对象，主要用来实现继承，原型自身也有一个原型，任何对象都可以成为原型, Object原型默认有2个属性constructor __proto__。新建函数是自动会添加prototype属性，值为空对象
 		 * __proto__ 是(除了null)任意对象的内置属性 (即每个对象都有这个__proto__属性), 值为当前对象的构造函数的prototype，两者都是指向其所属类的原型对象([[Prototype]])
 		 * new的过程 => js引擎遇到new关键字，分配一片内存并创建一个空对象(并且将this指向这个对象) => js引擎将这个空对象的__proto__ 指向后面构造函数的 prototype  对象
-		 * construct属性 任何一个prototype属性(任何一个实例也有constructor函数)都有一个constructor属性，指向它的构造函数(指向其直接构造函数本身fn2，不会找原型链上最终的构造函数fn1), 是一个具体函数，__proto__是一个链
+		 * construct属性 任何一个prototype属性(任何一个实例也有constructor函数)都有一个constructor属性，指向它的构造函数(指向其直接构造函数本身fn2，不会找原型链上最终的构造函数fn1)；当自定义构造函数的prototype属性后，constructor默认指向Object，需要手动修改
 		 * someObj.[[prototype]]  这个符号用于指派对象someObj的原型， 等价于js的__proto__属性(现在已弃用)
 		 *
 		 *  仅仅有new，会让每个实例都有自己的属性和方法的副本，无法做到数据共享，且浪费资源。构造函数默认会包含一个prototype属性，所有实例对象需要共享的属性和方法都放在里面(从外界看来prototype就像是实例对象的原型，实例则像是继承了peototype对象)。实例对象一旦创建，将自动引用peototype的属性和方法。即实例对象的属性和方法有2部分，一部分是本地的一部分是引用的
@@ -25,9 +25,10 @@
 				console.log("this.name= ",this.name);
 			}
 		}
-		console.log(fn1.prototype);     // 构造函数的原型为 顶层对象 Object
-		console.log(fn1.constructor);  //创建这个函数的 构造函数 function Function()
-		console.log(fn1.__proto__);   //构造函数的  function()
+		// 这个函数对象的创建  真实过程 new Funtion(){},
+		console.log(fn1.prototype);     // fn1这里就是一个对象，构造函数Funtion的原型为 顶层对象 Object
+		console.log(fn1.constructor);  // fn1这里被当做实例对象，它的直接构造函数为 function Function()
+		console.log(fn1.__proto__);   //  fn1这里被当做一个对象，它的__proto__为 fn1这个对象的构造函数Function的prototype(继承自它的构造函数的属性和方法)，构造函数的  function()
 
 		console.log(fn1.prototype.__proto__ , fn1.constructor.prototype.__proto__ ,fn1.constructor.__proto__.__proto__);
 		console.log("2----------------------");
@@ -129,6 +130,12 @@
 		var str = new String('sss');   //必须通过new 生成的， 或者引用类型
 		console.log(str instanceof String); 
 		console.log([1] instanceof Array);
+
+		// [http://hao.jser.com/archive/11405/]
+
+		// --------------什么是prototype  ，prototype就是通过调用构造函数而创建那个对象实例的原型对象(默认创建的含有2个属性)
+		//  我们创建的每一个函数都有一个prototype(原型)属性/对象(prototype对象都有一个指向构造函数的指针constructor，以及从Object继承来的属性和方法)，值为一个指针，指向一个对象(用途是包含特定类型的所有实例共享的属性和方法)；每个实例(对象)都包含一个指向原型对象内部指针__proto__；
+		//  Class.prototype.constructor == Class;  obj.construct = Obj; (每个实例对象的constructor都指向这个实例的构造函数 new Obj())
 	</script>
 </body>
 </html>
