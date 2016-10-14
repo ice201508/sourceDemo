@@ -25,6 +25,7 @@
 				console.log("this.name= ",this.name);
 			}
 		}
+		// fn1() 这样直接调用构造函数this就是window
 		// 这个函数对象的创建  真实过程 new Funtion(){},
 		console.log(fn1.prototype);     // fn1这里就是一个对象，构造函数Funtion的原型为 顶层对象 Object
 		console.log(fn1.constructor);  // fn1这里被当做实例对象，它的直接构造函数为 function Function()

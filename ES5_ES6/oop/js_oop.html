@@ -31,7 +31,7 @@
 			this.species = "动物";
 		}
 
-		Cat.prototype = new Animal();   //相当于删除了prototype对象原来的值，赋一个新值，这样所有的Cat实例都会继承它prototype属性(即Animal对象)上的所有属性和方法，达到Cat继承Animal的目的
+		Cat.prototype = new Animal();   //相当于删除了prototype对象原来的值(默认2个属性constructor和__proto__，没有属性可以给其他的类继承，必须要重写)，赋一个新值，这样所有的Cat实例都会继承它prototype属性(即Animal对象)上的所有属性和方法，达到Cat继承Animal的目的
 		Cat.prototype.construct = Cat; //上面的赋值后会将prototype的constructor属性默认改为Animal，这是编程必须遵守的一点，修改了prototype对象，必须问新的prototype对象的consturctor重新赋值
 
 		// 上一种方法的改进，因为执行和建立Animal实例(new Animale() )效率比较低，也比较占内存
@@ -40,14 +40,17 @@
 		}
 		// 如果不用new Country()去实现，必须手动指定prototype这个值，可以用new生成，也可以用字面量对象
 		Country.prototype = {
-			country : "prototype in 中国"
+			country : "prototype 中国"
 		}
+		//Country.prototype.country = "prototype in 中国";
+
 		Country.prototype.construct = Country;   //这里必须手动指定，不然instanceof是错误的指向
 		console.log(Animal.prototype);
 		console.log(Country.prototype);
 
+		// -----YUI库实现继承的方法
 		// 直接继承prototype(有缺点)。Cat.prototype = Animal.prototype 这样效率高，节省内存；但是修改Cat上的属性也会影响Animal上的属性，比如修改constructor时，Animal上的也变了
-		// --- 利用空对象作为中介， 封装成一个函数，这个函数是YUI库如何实现继承的方法
+		// --- 利用空对象作为中介， 封装成一个函数
 		function extend(Child, Parent){
 			var F = function(){}  //F是一个构造函数，也是一个空对象
 			F.prototype = Parent.prototype;
@@ -57,8 +60,96 @@
 
 		extend(Cat, Country);
 		var cat3 = new Cat('zhong', 'red');
-		console.log(cat3.country);  // 必须定义父级的prototype属性，可以供子级访问，不然这里是undefined
+		console.log(cat3.country);  // 必须定义父级的prototype属性，可以供子级访问，不然这里是undefined，(因为默认创建的prototype属性只有contructor和__proto__2个属性)
 
+
+		// -------------------------------拷贝继承(浅拷贝，深拷贝)，没有prototype属性
+		// 就是利用for循环，将一个对象的所有属性和方法全部 拷贝到另一个对象
+		
+		var Chinese = {
+			nation: '中国',
+			obj: {
+				'age': 12,
+				'addr': '北京'
+			}
+		}
+		var Doctor = {
+			career: '医生'
+		}
+		// ------------------浅拷贝函数，只能拷贝基本数据类型， Array/Object 引用类型由于是同一个内存地址，子对象改变也会将父对象改变
+		function extendCopy(p){
+			var c = {};
+			for(var i in p){
+				c[i] = p[i];
+			}
+			return c;
+		}
+
+		// --------------jQuery库使用的继承方法
+		//--------------深拷贝， 判断类型是否是引用类型，是就用递归调用 "浅拷贝"
+		function deepCopy(p, c){
+			var c = c || {};
+			for (var i in p){  //i表示键
+				if(typeof p[i] === 'object') { // 判断是否是对象
+					c[i] = (p[i].constructor === Array) ? []:{};  //判断是不是数组
+					deepCopy(p[i],c[i]);
+				} else {  // 基本类型
+					c[i] = p[i];
+				}
+			}
+			return c;
+		}
+
+		deepCopy(Chinese, Doctor);
+		console.log(Doctor.obj);
+		Doctor.obj.add_property = "add property";
+		console.log(Doctor.obj);
+		console.log(Chinese.obj);
+
+
+
+		// 这个object方法 可以再2个对象之间实现继承 
+		function object(o){
+			function F(){}
+			F.prototype = o;
+			return new F();
+		}
+
+/*
+		//--------------------js函数四种调用模式，原型链上call,apply,bind
+		add()   //普通函数调用，里面的this指向window，(当前调用这个方法的对象 window.add())
+		obj.add();   // 方法调用
+		new add();  //构造函数调用
+		add.apply(obj, [1,2,3]), add.call(obj, 1,2,3)  // call, apply(是Funtion构造函数上的方法) 调用
+*/
+
+		var name_this = "name_global";
+		function fn_this(){
+			console.log(this.name_this);
+		}
+		var o_this = {};
+		var o_this_new = new fn_this()  //this指向新创建的对象，o_this_new对象上没有这个属性，为undefined
+
+		o_this.name_this = "o_this";
+		o_this.m = fn_this;
+		o_this.m.apply();   //apply没有参数  this默认为window
+		o_this.m.apply(o_this);  // this被显示设置为o_this
+
+
+		// -------------------bind(thisObj [,arg])方法 (https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
+		//  会创建一个新函数(绑定函数)
+		
+		this.x = 9;
+		var module = {
+			x: 81,
+			getX: function(){console.log(this.x); return this.x}
+		};
+		module.getX() //  81 函数里面的this指向调用这个函数的对象 module
+
+		var retrieveX = module.getX;  // 这是将一个方法从对象里面拿出来，再调用，这时的this对象已经是window
+		retrieveX();  // 这个调用相当于 window.retrieveX();  this == window
+		var boundGetX = retrieveX.bind(module);  //创建一个新函数(函数里面的this=module)，原函数的一个拷贝
+		console.log(boundGetX);
 	</script>
 </body>
 </html>
