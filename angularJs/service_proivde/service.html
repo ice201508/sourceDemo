@@ -62,7 +62,7 @@
 				}
 			});
 		})
-		app.provider('movieProvider', function(){  //定义一个供应商movie，但注入到config中必须是服务，由供应商提供的，所以要写成 驼峰法 movieProvider
+		app.provider('movieProvider', function(){  //定义一个供应商movie，但注入到config中必须是服务，由供应商提供的，所以要写成 驼峰法 movieProviderProvider
 			var version;
 			return {
 				setVersion: function(value){

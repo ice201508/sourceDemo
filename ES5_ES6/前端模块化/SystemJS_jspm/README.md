@@ -14,7 +14,18 @@
 
 项目初始化`jspm init`
 
-安装第三方库(从github上安装)`jspm install jquery`,或者(从npm上下载安装)`jspm install npm:jquery`
+安装第三方库(从github上安装)`jspm install jquery`,或者(从npm上下载安装)`jspm install npm:jquery`，卸载`jspm uninstall jquery`
+
+```
+jspm install bootstrap  -->  import bootstrap from 'bootstrap'
+jspm install css   -->  import 'bootstrap/css/bootstrap.css!'   !表示经过插件处理
+```
+
+用本地服务器启动，不能有文件协议直接打开index.html，请求有点多，这时就要打包，分开为js打包和css打包。
+
+在config.js里添加`separateCSS: true`，这样就是分开打包，执行`jspm bundle-sfx app build.js --minify`，再去index.html文件中引入build.js,build.css
+
+
 
 systemjs 是通用模块加载器，支持AMD、CommonJS、ES6等各种格式的js模块加载
 es6-module-loader 是ES6模块加载器，systemjs自动加载
