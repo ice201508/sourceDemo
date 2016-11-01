@@ -1,0 +1,14 @@
+{
+  "name": "es6",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "ice201508 <2235907780@qq.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ice201508/sourceDemo",
+  "dependencies": {
+    "font-awesome-sass": "^4.7.0",
+    "bootstrap-sass": "^3.3.7"
+  }
+}
