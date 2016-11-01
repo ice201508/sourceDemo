@@ -30,3 +30,17 @@ jspm install css   -->  import 'bootstrap/css/bootstrap.css!'   !表示经过插
 systemjs 是通用模块加载器，可以导入任何流行格式的模块（CommonJS、UMD、AMD、ES6）
 es6-module-loader 是ES6模块加载器，systemjs自动加载
 traceur  是ES6转码器，将ES6代码转换为当前浏览器支持的ES5代码，system自动加载
+
+
+### generator-systemjs
+
+[angular2 Demo](https://github.com/amcdnl/angular2-demo)
+[system-seed](https://github.com/lookfirst/systemjs-seed)
+
+项目启动,使用yeoman脚手架
+
+```
+npm install -g generator-systemjs
+yo systenjs
+gulp run
+```
