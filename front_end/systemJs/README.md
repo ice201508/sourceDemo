@@ -21,12 +21,12 @@ jspm install bootstrap  -->  import bootstrap from 'bootstrap'
 jspm install css   -->  import 'bootstrap/css/bootstrap.css!'   !表示经过插件处理
 ```
 
-用本地服务器启动，不能有文件协议直接打开index.html，请求有点多，这时就要打包，分开为js打包和css打包。
+用本地服务器启动，不能用文件协议直接打开index.html，请求有点多，这时就要打包，分开为js打包和css打包。
 
 在config.js里添加`separateCSS: true`，这样就是分开打包，执行`jspm bundle-sfx app build.js --minify`，再去index.html文件中引入build.js,build.css
 
 
 
-systemjs 是通用模块加载器，支持AMD、CommonJS、ES6等各种格式的js模块加载
+systemjs 是通用模块加载器，可以导入任何流行格式的模块（CommonJS、UMD、AMD、ES6）
 es6-module-loader 是ES6模块加载器，systemjs自动加载
 traceur  是ES6转码器，将ES6代码转换为当前浏览器支持的ES5代码，system自动加载

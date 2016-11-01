@@ -18,8 +18,6 @@ bowserify打包js并使用CommonJS模块在浏览器中运行node模块
 
 ES6中是 export --> import    bowserify中的是module.exports --> require
 
-### babel
-
 ### [ES6语法](http://es6.ruanyifeng.com/)
 
 运行时加载 与 编译时加载
@@ -28,3 +26,5 @@ ES6中是 export --> import    bowserify中的是module.exports --> require
 ### .gitignore
 
 配置文件用于配置不需要加入版本管理的文件
+
+### [browserify官网](http://browserify.org/)
