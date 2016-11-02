@@ -23,8 +23,9 @@ ES6中是 export --> import    bowserify中的是module.exports --> require
 运行时加载 与 编译时加载
 
 
-### .gitignore
+### [gulp中文文档](http://www.gulpjs.com.cn/docs)
 
-配置文件用于配置不需要加入版本管理的文件
+.gitignore 配置文件用于配置不需要加入版本管理的文件
+
 
 ### [browserify官网](http://browserify.org/)
