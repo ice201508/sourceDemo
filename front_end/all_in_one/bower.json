@@ -1,0 +1,22 @@
+{
+  "name": "all_in_one",
+  "description": "常用的gulp插件",
+  "main": "gulpfile.js",
+  "authors": [
+    "vegeta"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/ice201508/sourceDemo",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap-sass": "^3.3.7",
+    "font-awesome-sass": "^4.7.0"
+  }
+}

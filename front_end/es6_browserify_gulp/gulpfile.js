@@ -19,7 +19,7 @@ gulp.task("convertJS", function(){
 //编译合并并压缩scss
 gulp.task("convertCSS", function(){  //必须写return，这个任务是链式的
 			 gulp.src(config.css)
-			.pipe($.sass().on('error', $.sass.logError))  //有几个最终目录便会生成几个文件
+			.pipe($.sass().on('error', $.sass.logError))  //有几个最终目录便会生成几个文件，这里会生成2个流
 			//.pipe($.concat())  //合并css
 			//.pipe($.minifyCss({compatibility: 'ie8'})) //压缩css
 			.pipe($.rename(function(path){
