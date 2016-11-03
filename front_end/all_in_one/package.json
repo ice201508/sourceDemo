@@ -15,14 +15,21 @@
     "gulp-autoprefixer": "^3.1.1",
     "gulp-clean-css": "^2.0.13",
     "gulp-concat": "^2.6.0",
+    "gulp-if": "^2.0.1",
     "gulp-inject": "^4.1.0",
     "gulp-livereload": "^3.8.1",
     "gulp-load-plugins": "^1.4.0",
+    "gulp-order": "^1.1.1",
     "gulp-rename": "^1.2.2",
     "gulp-rev": "^7.1.2",
     "gulp-sass": "^2.3.2",
     "gulp-scss-lint": "^0.4.0",
     "gulp-sourcemaps": "^2.2.0",
-    "gulp-uglify": "^2.0.0"
+    "gulp-uglify": "^2.0.0",
+    "gulp-useref": "^3.1.2"
+  },
+  "dependencies": {
+    "angular": "^1.5.8",
+    "babel-core": "^5.8.38"
   }
 }

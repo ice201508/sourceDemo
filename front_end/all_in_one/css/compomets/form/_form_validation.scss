@@ -1,0 +1,10 @@
+// form validation
+.form-validation{
+
+    .ng-valid.ng-dirty {
+        border-color: $brand-success;
+    }
+    .ng-invalid.ng-invalid-min {
+        border-color: $brand-danger;
+    }
+}
