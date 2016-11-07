@@ -3,6 +3,7 @@
 
 angular-cli 
 
+a2启动至少需要一个根模块，一个根组件
 
 注解，装饰器
 
@@ -15,3 +16,5 @@ system.src.js是动态模块加载器
 开发工具 `lite-server  concurrently` 前者是一个简易的服务器，后者方便在命令行同时运行多个命令
 
 angular2通过ts来编写，运行tsc会在源文件的目录下生成响应的js文件，但是ts无法识别js的类库，如jquery，angularjs，需要提前在ts上定义，typings将完成这部分工作
+
+angular目录下都会有几个d.ts文件，这个是类型定义文件，很多库都没有d.ts文件，引用时必须用typings类型定义文件，告诉编译器要加载的库的类型定义
