@@ -27,7 +27,7 @@ jspm install css   -->  import 'bootstrap/css/bootstrap.css!'   !表示经过插
 
 
 
-systemjs 是通用模块加载器，可以导入任何流行格式的模块（CommonJS、UMD、AMD、ES6）
+systemjs 是通用模块加载器(是一个垫片库polyfill)，可以导入任何流行格式的模块（CommonJS、UMD、AMD、ES6）
 es6-module-loader 是ES6模块加载器，systemjs自动加载
 traceur  是ES6转码器，将ES6代码转换为当前浏览器支持的ES5代码，system自动加载
 
@@ -44,3 +44,12 @@ npm install -g generator-systemjs
 yo systenjs
 gulp run
 ```
+
+### ES6模块的转码
+
+目前的浏览器还不支持es6模块，为了现在能使用，可以将其转化为 es5的写法，可用的方法有systemJS搭配 (traceur，babel，typescript)
+
+[system配置](https://github.com/systemjs/systemjs/blob/master/docs/config-api.md)
+
+`npm install system` 另一个 `npm install systemjs`
+还要安装es6转码器 `npm install systemjs-plugin-traceur`，

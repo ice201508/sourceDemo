@@ -1,15 +1,15 @@
 {
-  "name": "systemjsss",
+  "name": "es6systemjs",
   "version": "1.0.0",
-  "description": "",
+  "description": "systemjs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {},
   "devDependencies": {
-    "systemjs": "^0.19.40"
+    "systemjs": "^0.19.40",
+    "systemjs-plugin-traceur": "0.0.3"
   }
 }
