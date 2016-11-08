@@ -53,3 +53,11 @@ gulp run
 
 `npm install system` 另一个 `npm install systemjs`
 还要安装es6转码器 `npm install systemjs-plugin-traceur`，
+
+
+
+### es6语法
+
++ 参数列表 => 语句或语句块
+参数列可以包含任意个参数，1个参数可省略括号，0个或大于1个必须使用括号
+语句或语句块，如果只有一条语句可以不使用大括号，否则必须使用

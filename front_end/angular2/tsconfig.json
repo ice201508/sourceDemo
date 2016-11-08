@@ -1,12 +1,16 @@
 {
 	"compilerOptions": {
-		"target": "es5",
-		"module": "commonjs",
-		"moduleResolution": "node",
+		"target": "es5",  //编译为es5
+		"module": "commonjs",  //模块化方式 还要amd，cmd等
+		"moduleResolution": "node",  //使用node处理
 		"sourceMap": true,
 		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
-		"removeComments": false,
+		"experimentalDecorators": true, //开启装饰器，es7才有的功能
+		"removeComments": false,  //编译后的代码移除注释
 		"noImplicitAny": false
-	}
+	},
+	"exclude" : [  //排除下面的目录
+		"node_modules",
+		"bower_components"
+	]
 }
