@@ -35,9 +35,8 @@ body {
 }
 
 #column2.interior {
-	position: absolute;  /*fixed*/
-	left:0;
-	top:0;
+	position: fixed;  /*absolute是不行的*/
+	top:100px;
 	bottom: 0;
 	width: 234px;
 	background: #333;
