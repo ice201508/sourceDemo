@@ -5814,23 +5814,6 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
-.ali-side {
-  width: 200px;
-  height: 100px;
-  background-color: #eee;
-  color: #fff;
-  border-radius: 5px;
-  border: 2px solid red;
-  border-shadow: 10px 10px 5px #888888;
-  transform: rotate(45deg); }
-
-.change {
-  color: red; }
-
-.ali-font-20 {
-  font-size: 1.5em;
-  color: #23AE89; }
-
 @charset "UTF-8";
 /*!
  *  Font Awesome 4.7.0 by @davegandy - http://fontawesome.io - @fontawesome
@@ -8160,3 +8143,20 @@ button.close {
   margin: 0;
   overflow: visible;
   clip: auto; }
+
+.ali-side {
+  width: 200px;
+  height: 100px;
+  background-color: #eee;
+  color: #fff;
+  border-radius: 5px;
+  border: 2px solid red;
+  border-shadow: 10px 10px 5px #888888;
+  transform: rotate(45deg); }
+
+.change {
+  color: red; }
+
+.ali-font-20 {
+  font-size: 1.5em;
+  color: #23AE89; }

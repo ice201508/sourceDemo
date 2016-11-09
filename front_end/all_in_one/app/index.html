@@ -5,18 +5,28 @@
 	<title>Document</title>
 	<!-- build:css css/build.min.css -->
 	<link rel="stylesheet" href="../.tmp/css/bootstrap.css">
-	<link rel="stylesheet" href="../.tmp/css/main.css">
-	<link rel="stylesheet" href="../.tmp/css/ui.css">
+	<link rel="stylesheet" href="../.tmp/css/custom.css">
+	<link rel="stylesheet" href="../.tmp/css/font-awesome.css">
 	<!-- endbuild -->
+	<link rel="stylesheet" href="css/weather-icons.css">
 </head>
 <body  ng-app="app">
 	<div class="jumbotron" ng-controller="headerController as header">
-		<h1 ng-cloak>{{header.person.name}}</h1>
+		<h3 ng-cloak>{{header.person.name}}</h3>
 		<div class="ali-side">
 			<span>{{header.sClass}}</span>
 			<span ng-bind="header.person.age"></span>
 		</div>
 		<div class="change">status</div>
+		<div>
+			<span class="glyphicon glyphicon-th-list ali-font-20"></span>
+		</div>
+		<div>
+			<i class="fa fa-thermometer-quarter ali-font-20"></i>
+		</div>
+		<div>
+			<i class="wi wi-night-sleet"></i>
+		</div>
 	</div>
 
 	<!-- build:js js/babel.js -->

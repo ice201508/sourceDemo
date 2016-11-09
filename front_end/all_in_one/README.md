@@ -22,6 +22,13 @@ gulp-order合并css文件顺序问题，
 
 ### CSS任务
 
+字体图标
+[bootstrap文档](http://getbootstrap.com/)
+[foundation文档](http://foundation.zurb.com/)
+[fontawesome文档](http://fontawesome.io/)
+[Weather Icons文档](https://erikflowers.github.io/weather-icons/)
+
+sass片段，在文件名前加_ 可以避免被编译为css文件，而作为一个sass片段使用，如_color.scss编译就不会生成color.css文件。并且同一文件夹下不能有同名的文件存在如 _color.scss 和 color.scss 是同名文件，不能共存
 
 ### JS任务
 
