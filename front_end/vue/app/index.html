@@ -6,7 +6,16 @@
 </head>
 <body>
 	<div id="app">
-		<p>{{message}}</p>
+		<p>message: {{message}}</p>
+		<p>reversedMessage: {{reversedMessage }}</p>
+		<p :class="message"></p>
+		<input v-model="newTodo" v-on:keyup.enter="addTodo">
+		<ul>
+			<li v-for="(todo, index) in todos">
+				<span>{{todo.text}}</span>
+				<button @click="removeTodo(index)">Delete</button>
+			</li>
+		</ul>
 	</div>
 
 	<script src="../node_modules/vue/dist/vue.js"></script>
