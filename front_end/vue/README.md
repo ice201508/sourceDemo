@@ -17,7 +17,11 @@ v-前缀在模板中是一个vue特殊属性的标识，2个常见的指令v-bin
 "string".split('').reverse().join('')  字符串倒序
 
 计算属性
-在模板中放入太多的逻辑会让模板过重且难以维护
+在模板中放入太多的逻辑会让模板过重且难以维护。
+计算属性 是基于它的依赖缓存, 和使用方法有区别。
+实例对象的$watch回调
 
-
+class,style的绑定
+条件渲染 template v-if/v-else/v-show
+列表渲染  `v-for=“(item, index) in/of items"`, 也支持template语法
 ### vue-loader

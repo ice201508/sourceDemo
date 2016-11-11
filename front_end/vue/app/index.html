@@ -3,16 +3,30 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
+	<link rel="stylesheet" href="app.css">
 </head>
 <body>
 	<div id="app">
-		<p>message: {{message}}</p>
-		<p>reversedMessage: {{reversedMessage }}</p>
+		<input type="text" v-model="message">
+		<p class="main" v-bind:class="{'active': isActive, 'text-error': hasError}">message: {{message}}，isActive：{{isActive}}</p>
+		<input type="checkbox" v-model="isActive">
+		<p :class="classObject">reversedMessage: {{reversedMessage}}</p>
 		<p :class="message"></p>
+		<p v-if="isActive">{{now}}</p>
+		<p v-else>No</p>
+		<!-- <p>{{now()}}</p> -->
+		<template v-if="isActive">
+			<h4>title</h4>
+			<p>p1</p>
+			<p>p1</p>
+			<p>p1</p>
+		</template>
+		<p><input type="text" v-model="firstName"></p>
+		<p>watch监听：{{fullName}}，计算属性：{{fullNameCom}}</p>
 		<input v-model="newTodo" v-on:keyup.enter="addTodo">
 		<ul>
 			<li v-for="(todo, index) in todos">
-				<span>{{todo.text}}</span>
+				<span>{{todo.text}} -- {{index}}</span>
 				<button @click="removeTodo(index)">Delete</button>
 			</li>
 		</ul>
