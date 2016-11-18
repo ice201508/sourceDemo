@@ -3,7 +3,7 @@
 [vue生态系统](https://github.com/vuejs/awesome-vue#libraries--plugins)
 
 
-+ vuejs表达式
+vuejs表达式
 
 $index is not defined 在vuejs2.0中 已经去掉了默认的$index属性，(<li v-for="todo in todos">，没有$index属性)，循环之前手动指定(<li v-for="(todo, index) in todos">)
 
@@ -13,6 +13,14 @@ v-前缀在模板中是一个vue特殊属性的标识，2个常见的指令v-bin
 插值       --- (文本中，属性中)
 过滤器    --- 只能再mustache绑定中使用
 指令       ---  一个指令只能接受一个“参数”，指令后用冒号标识，v-bind 用来响应更新HTML属性，v-on用来监听 DOM事件。指令的参数后面用.半角句号指明特殊后缀，叫修饰符modifiers
+修饰符   --- v-model.lazy   v-model.trim  v-model.number
+
+自定义按键修饰符别名
+```
+Vue.config.keyCodes.f1 = 112; 
+v-on:keyup.f1 = doSomething
+```
+
 
 "string".split('').reverse().join('')  字符串倒序
 
@@ -23,5 +31,11 @@ v-前缀在模板中是一个vue特殊属性的标识，2个常见的指令v-bin
 
 class,style的绑定
 条件渲染 template v-if/v-else/v-show
-列表渲染  `v-for=“(item, index) in/of items"`, 也支持template语法
+列表渲染  `v-for="(item, index) in/of items"`, 也支持template语法
+
 ### vue-loader
+
+
+### Vue 组件
+
+ W3C规则自定义标签名:小写，并且包含一个短杠

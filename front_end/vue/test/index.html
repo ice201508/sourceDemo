@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="app.css">
+</head>
+<body>
+	<div id="app">
+		<input type="text" v-model="message"  v-on:keyup.enter="addList">
+		<input type="checkbox" v-model="changeClass">
+		<p>{{changeClass}}</p>
+		<p v-bind:class="{'active': changeClass}">{{message}}</p>
+		<p>sWatch: {{sWatch}}</p>
+		<p v-if="changeClass">{{cMessage}}</p>
+		<p v-else>else</p>
+		<div v-for="(value, key) in aList">
+			<p>{{key}} --- {{value.name}}<button @click="fRemoveList(key)">删除</button></p>
+		</div>
+		<select v-model="selected">
+			<option v-for="(value, key) in aList" v-bind:value="value.name">
+				{{value.name}}
+			</option>
+		</select>
+		<p>selected: {{selected}}</p>
+	</div>
+
+	<script src="../node_modules/vue/dist/vue.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
