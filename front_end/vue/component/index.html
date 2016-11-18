@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div id="example">
+		<p>{{message.age}}</p>
+		<p>{{total}}</p>
+		<my-component :my-message="message"></my-component>
+		<!-- 组件中用事件监听，事件来自组件发出的，类似click -->
+		<child-component v-on:increment = "incrementTotal"></child-component>
+	</div>
+
+	<script src="../node_modules/vue/dist/vue.js"></script>
+	<script src="app.js"></script>
+</body>
+</html>
