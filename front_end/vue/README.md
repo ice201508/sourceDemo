@@ -33,19 +33,24 @@ class,style的绑定
 条件渲染 template v-if/v-else/v-show
 列表渲染  `v-for="(item, index) in/of items"`, 也支持template语法
 
-### vue-loader
-
 
 ### Vue 组件
 
  W3C规则自定义标签名:小写，并且包含一个短杠
 
 组件可以再全局注册，也可以再局部注册(使用组件实例的选项components关键字)
-父子组件的通信，父组件通过 props 向下传递数据给子组件，子组件通过 events 给父组件发送消息(静态props，动态props需要用ng-bind:)
+父子组件的通信，父组件通过 props 向下传递数据给子组件，子组件通过 events 给父组件发送消息(静态props，动态props需要用ng-bind:)。
+非父子组件通信： bus.$emit('is-selected', 1);  bus.$on('is-selected', function(){...})
+
 字面量语法 vs 动态语法 
 <comp some-prop="1"></comp> 传递了一个字符串"1"
 <comp v-bind:some-prop="1"></comp>   传递实际的数字
 
 在 JavaScript 中对象和数组是引用类型，指向同一个内存空间，如果 prop 是一个对象或数组，在子组件内部改变它会影响父组件的状态。
 
+在组合组件时，使用内容分发 API， slot(类似angularjs的transclude)
 DOM模板， 字符串模板
+
+
+
+### vue-loader
