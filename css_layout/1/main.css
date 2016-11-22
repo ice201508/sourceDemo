@@ -2,6 +2,10 @@
 	box-sizing: border-box;
 }
 
+body, html {
+	height: 100%;
+}
+
 body {
 	margin: 0;
 	font-size: 14px;
@@ -14,10 +18,6 @@ body {
 	height: 100%;
 }
 
-.book.with-summary .book-summary {
-	left: 0;
-}
-
 .book .book-summary {
 	position: absolute;
 	top: 0;
@@ -26,36 +26,24 @@ body {
 	z-index: 1;
 	width: 300px;
 	color: #000;
-	background: #fafafa;
+	background: #ccc;
 	border-right: 1px solid #292424;
 }
 
-.book .book-summary ul.summary {
-	position: absolute;
-	top: 0;
+.book.with-summary .book-summary {
 	left: 0;
-	bottom: 0;
-	overflow-y: auto;
-	list-style: none;
-	margin: 0;
-	padding: 0;
 }
-
 
 .book.with-summary .book-body {
 	left: 300px;
 }
 
 .book .book-body {
+	position: relative;
+	top: 0;
+	left: 300px;
+	right: 0; 
+	bottom:0;
 	color: #000;
 	background: #999;
-}
-
-.book .book-body, .book .book-body .book-inner {
-	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	overflow-y: auto;
 }

@@ -36,6 +36,10 @@ module.exports = {
 	plugins: [
 		new webpack.BannerPlugin("Copyright Flying Unicorns inc."),
 		new HtmlWebpackPlugin({
+			filename: "index.html",
+			inject: "body",
+			favicon: 'img/favicon.ico',
+			hash:  false,
 			template: __dirname + "/app/index.tmp.html"
 		}),
 		new webpack.optimize.OccurenceOrderPlugin(),

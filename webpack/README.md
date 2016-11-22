@@ -17,6 +17,7 @@ module.exports = {
 		loaders: []
 	},
 	plugins: [],
+	resolve: {},
 	devServer: {}
 }
 
@@ -90,6 +91,20 @@ css module
 
 分离css和js文件 npm install --save-dev extract-text-webpack-plugin
 
+### resolve
+
+```
+resolve: {
+	// require时省略的扩展名，如：require('module') 不需要module.js
+	extensions: ['', '.js', '.vue'],
+	// 别名，可以直接使用别名来代表设定的路径以及其他
+	alias: {
+			filter: path.join(__dirname, './src/filters'),
+			components: path.join(__dirname, './src/components')
+	}
+},
+```
+
 
 ### Plugins
 loaders是在打包构建过程中用来处理源文件的（JSX，Scss，Less..），一次处理一个，插件并不直接操作单个文件，它直接对整个构建过程其作用。既有内置插件也有第三方插件
@@ -103,8 +118,8 @@ plugins: [
 npm install --save-dev html-webpack-plugin 根据模板自动生成html文件，自动引入打包后的js文件
 ```
 new HtmlWebpackPlugin({
-    template: __dirname + "/app/index.tmpl.html"//new 一个这个插件的实例，并传入相关的参数
-  })
+		template: __dirname + "/app/index.tmpl.html"//new 一个这个插件的实例，并传入相关的参数
+	})
 ```
 
 常用插件
