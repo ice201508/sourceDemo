@@ -2,6 +2,8 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+var pathToReact = path.resolve(node_modules, 'react/dist/react.min.js');
+
 module.exports = {
 	devtool: 'eval-source-map',
 	entry: __dirname + "/app/main.js",
@@ -10,7 +12,14 @@ module.exports = {
 		filename: "[name]-[hash].js",
 	},
 
+	resolve: {
+		alias: {
+			'react': pathToReact
+		}
+	}
+
 	module: {
+		noParse: [pathToReact],
 		loaders: [
 			{
 				test: /\.json$/,

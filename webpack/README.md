@@ -92,6 +92,7 @@ css module
 分离css和js文件 npm install --save-dev extract-text-webpack-plugin
 
 ### resolve
+在webpack中都是用require(‘react’)的方式引入reactjs，默认的require()方法会去遍历reactjs及其依赖，增加的打包的时间
 
 ```
 resolve: {
