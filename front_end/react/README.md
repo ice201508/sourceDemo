@@ -1,17 +1,23 @@
 
 [react起步](http://www.ruanyifeng.com/blog/2015/03/react.html)
+[react路由](https://react-guide.github.io/react-router-cn/docs/)
 
 ### 项目环境搭建
 
-`npm install react react-dom --save`
+`npm install react react-dom react-router --save`
 `npm install webpack webpack-dev-server html-webpack-plugin babel-core babel-loader babel-preset-react babel-preset-es2015 --save-dev`
 
+rxJs --> javascript响应式扩展
 
 ### HTML标签 vs React组件
 小写字母开头的是 html标签 <div className="foo" />;
 大写字母开头的是react组件 <MyComponent someProperty={true} />;
 
 组件并不是真实的DOM节点，而是存在于内存中的一种数据结构，叫做虚拟DOM，只有插入文档之后才会变成真实的DOM，利用的算法叫 DOM diff
+
+定义组件 
+React.createClass({...})
+React.Component{...}
 
 ### JSX语法
 
@@ -42,5 +48,4 @@ React.createClass() 生成一个组件类
 JSX语法， html写在js语言之中
 
 
-
-
+### React Route
