@@ -4,4 +4,3 @@ import ReactDOM from 'react-dom';
 import App from './app.jsx';
 
 ReactDOM.render(<App name="传递参数" site="参数site" />, document.getElementById('app'))
-//ReactDOM.render(<Side />, document.getElementById('wrap'))
