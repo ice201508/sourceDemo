@@ -10,6 +10,14 @@ import React from 'react';
 export default React.createClass({
 	render() {
 		//return <div>reee</div>
-		return (<div>123{this.props.children}</div>)
+		return (
+			<div>
+				<div>
+					<a href="./left">left</a><br />
+					<a href="./right">right</a>
+				</div>
+				<div>{this.props.children}</div>
+			</div>
+		)
 	}
 });
