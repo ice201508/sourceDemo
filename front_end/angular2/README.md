@@ -29,12 +29,40 @@ angular目录下都会有几个d.ts文件，这个是类型定义文件，很多
 之前都是在服务器端编译在发送html过来，现在是发送数据过来，在浏览器编译
 
 
-import-export
-export function abc(){ ...}
-export default function(){...}
-export var m =1;
-export obj={};
-export {obj as default};
+## 3个核心文件
 
-import e from '/defalut_expo';
-import {m,obj} from 'expt'
+app.component.ts   根组件，组件树
+app.module.ts         根模块，声明如何组装应用,  其他模块叫特性模块
+main.ts                    启动应用
+
+
+### 装饰器Decorator
+
+装饰器是一种特殊的类型声明，前面有@都是装饰器
+定义模块用 @NgModule()    ---- 属于 interface类型(API)  (@Component属于装饰器类型)
+angular2中的模块是指用@NgModule修饰的class，
+
+```
+@NgModule({
+	imports: [BrowserModule, FormsModule ],  //导入其他module，使用它们的指令、组件、管道
+	declarations: [AppComponent, HighlightDirective, TitleComponent],  // 模块内部的组件、指令、管道(不能加入其他模块的)
+	providers: [UserService ]   //提供给所有组件使用，注册为根级别的依赖注入
+})
+
+NgIf来自@angular/common的CommonModule中声明的，导入BrowserModule，它导入了CommonModule
+NgModel是在FormsModule模块中声明的，RouteLink是在RouteModule模块中声明的，在使用之前必须导入对应的模块(在imports中)
+```
+
+### 事件
+
+```
+#addValue  ref-newValue  模板变量
+[value]="firstName" 绑定属性
+
+(click) = "fAddList()"
+(click)="newHero(); heroForm.reset()"
+(keyup) = "fAddList()"
+(keyup.enter) = "fAddList()"
+(blur) = "fAddList()"
+(ngSubmit)="onSubmit()"
+```
