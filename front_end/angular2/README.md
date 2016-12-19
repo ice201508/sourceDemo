@@ -40,7 +40,7 @@ main.ts                    启动应用
 
 装饰器是一种特殊的类型声明，前面有@都是装饰器
 定义模块用 @NgModule()    ---- 属于 interface类型(API)  (@Component属于装饰器类型)
-angular2中的模块是指用@NgModule修饰的class，
+angular2中的模块是指用@NgModule修饰的class
 
 ```
 @NgModule({
@@ -65,4 +65,28 @@ NgModel是在FormsModule模块中声明的，RouteLink是在RouteModule模块中
 (keyup.enter) = "fAddList()"
 (blur) = "fAddList()"
 (ngSubmit)="onSubmit()"
+```
+
+
+HTML attribute 和 DOM property 也不是同一样东西,angularjs的模板绑定是通过property和事件来工作的
+
+
+
+
+
+
+
+
+
+### 第三方库
+
+[ng2-bootstrap](https://github.com/valor-software/ng2-bootstrap)
+[useAge](http://valor-software.com/ng2-bootstrap/#/)
+npm install ng2-bootstrap bootstrap --save
+
+需要再systemjs.config.js里面引入这2个文件
+```
+'moment':               'npm:ng2-bootstrap/node_modules/moment/moment.js',
+//引入这个库的冒号前后的写法
+'ng2-bootstrap/ng2-bootstrap':    'npm:ng2-bootstrap/bundles/ng2-bootstrap.umd.js',
 ```

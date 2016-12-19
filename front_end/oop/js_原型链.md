@@ -6,7 +6,7 @@
 js一切为对象，分为 普通对象和函数对象，Objcet,Funtion是js自带的函数对象。原型可理解为对象的默认属性和方法。
 prototype：    函数对象才有prototype，它是一个普通对象(唯一一个特殊的是Function.prototype，它是空函数对象)，里面始终包含__proto__属性和constructor属性
 __proto__：   所有对象都有 __proto__属性，指向创建当前对象的构造函数的原型
-constructor ：当前对象的构造函数，当自定义构造函数的prototype属性后，实例的constructor默认指向Object，需重新赋值对应的constructor
+constructor ：当前对象的构造函数，当自定义构造函数的prototype属性后，实例的constructor默认指向Object，需重新赋值对应的constructor。任何一个prototype属性(任何一个实例也有constructor函数)都有一个constructor属性，指向它的构造函数
 
 
 
@@ -22,7 +22,7 @@ console.log(o.prototype);  普通对象没有prototype属性，只有__proto__�
 function hello(){
 	console.log('hello');
 }
-console.log(hello.prototype);  不手动指定hello的prototype，默认自定义函数的原型是Object.prototype
+console.log(hello.prototype);  不手动指定hello的prototype，默认自定义函数的原型是Object.prototype，里面只有2个属性 constructor 和 __proto__
 hello.prototype = "hello world";  手动指定函数prototype，及给它添加默认的属性和方法
 console.log(hello);
 ```
@@ -58,6 +58,6 @@ function Child(){
 Child.prototype = new Parent();
 //Child.prototype.constuctor = Child;
 
-var child = new Child();
+var child = new Child();k
 
 ``
