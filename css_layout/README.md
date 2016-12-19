@@ -23,3 +23,7 @@ body, html {
 左absolute，width固定
 右absolute，left为左的宽度，  注意若上面html没有100%，则外层的relative去掉，让它默认相对body的100%高度才行，
 ```
+
+### 垂直居中
+
+[5种垂直居中](https://www.qianduan.net/css-to-achieve-the-vertical-center-of-the-five-kinds-of-methods/)
