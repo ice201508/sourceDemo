@@ -13,7 +13,10 @@ import { HeroService } from './hero.service';
 				<span>{{hero.name}}</span>
 			</li>
 		</ul>
-		
+		<div *ngIf="selectedHero">
+			<h2>{{selectedHero.name | uppercase}} is my hero</h2>
+			<button (click)="gotoDetail()">View Details</button>
+		</div>
 		`,
 	styles: [`
 		.selected {
@@ -71,7 +74,8 @@ export class HerosComponent implements OnInit {
 	selectedHero: Hero;
 
 	constructor(
-		private router: Router
+		private router: Router,
+		private heroService: HeroService
 	) { };
 
 	ngOnInit(): void {
@@ -84,6 +88,6 @@ export class HerosComponent implements OnInit {
 		this.heroService.getHeros().then(heros => this.heros= heros);
 	}
 	gotoDetail(): void {
-		this.router.navigate(['./detail'], this.selectedHero.id);
+		this.router.navigate(['./detail', this.selectedHero.id]);
 	}
 }
