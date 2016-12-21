@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
 
-@Component ({
+@Component({
 	selector: 'my-app',
-	template: `<h3>first angular app</h3><div>{{title}}<p>{{hero}}</p></div>`
+	template: `
+		<h1>{{title}}</h1>
+		<nav>
+			<a routerLink="/dashboard">Dashboard</a>
+			<a routerLink="/heros">Heros</a>
+		</nav>
+		<router-outlet></router-outlet>
+	`
 })
-
 export class AppComponent {
-	title = '根组件title';
-	hero = 'sublime text';
+	title = '根组件';
 }
-
-console.log(Component);

@@ -92,3 +92,8 @@ function testTable(isTestTable) {
 @testTable('string')
 class MyTestClass {}
 console.log('装饰器： ', MyTestClass.isTestTable);
+
+
+[2,3,4,56,6].forEach(function(one_item){
+	console.log(one_item);
+})

@@ -204,3 +204,7 @@ var MyTestClass = (_dec = testTable('string'), _dec(_class = function MyTestClas
 }) || _class);
 
 console.log('装饰器： ', MyTestClass.isTestTable);
+
+[2, 3, 4, 56, 6].forEach(function (one_item) {
+	console.log(one_item);
+});
