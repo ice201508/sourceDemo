@@ -18,6 +18,8 @@
 	* angular.copy(source [,destination])
 	* angular.element()
 	* angular.equals()
+	* angular.extend(destination, [,source])  浅拷贝
+	* angular.merge(destination, [,source])  深拷贝
 	* angular.forEach()
 	* angular.fromJson, angular.toJson
 	* angular.identity, angular.noop
@@ -59,8 +61,8 @@
 			var d1 = angular.element('.header');  //引入了jquery的写法
 			console.log(d1);
 			//未引入jquery时
-			var d3 = angular.element(document.querySelector('.header'));   ==> DOM API
-			var d2 = angular.element(document).find('.header');   ==>  $document.find('header')
+			var d3 = angular.element(document.querySelector('.header'));   //==> DOM API
+			var d2 = angular.element(document).find('.header');   //==>  $document.find('header')
 			console.log(d2);
 			console.log(angular.isElement(angular.element('.header')));
 
@@ -77,9 +79,20 @@
 			var obj3 = {'mem': true};
 			//后面可以传入一个或多个对象
 			var new_obj = angular.extend({}, obj2, obj1, obj3); //3个对象都不变, 组成新对象第一个参数放{}空对象
-			console.log(new_obj);
+			console.log("------------------------------merge:  ", new_obj);
 			new_obj.deep.in_deep = '不是深拷贝,是同一个地址';
-			console.log(new_obj, obj2); //发现原始对象的属性也发生了改变
+			console.log(new_obj); //发现原始对象的属性也发生了改变
+
+			//---------------------------------扩展对象
+			//angular.merge(destination, [.sources])  深拷贝，extend是浅拷贝
+			var ob1 = {a:1};
+			var ob2 = {b:2};
+			var ob3 = {c:3};
+			var new_ob = angular.merge({}, ob1,ob2,ob3);
+			console.log("------------------------------merge:  ", new_ob)
+			ob2.b = "修改后的值";
+			console.log(new_ob);
+
 
 			//---------------------------------循环
 			//angular.forEach()可以循环数组和对象
